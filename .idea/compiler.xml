@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="blog-server-entity" />
+        <module name="blog-server-common" />
         <module name="blog-server-gateway" />
         <module name="blog-server-biz" />
         <module name="blog-server-controller" />
@@ -18,6 +19,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="blog-server" options="-parameters" />
       <module name="blog-server-biz" options="-parameters" />
+      <module name="blog-server-common" options="-parameters" />
       <module name="blog-server-controller" options="-parameters" />
       <module name="blog-server-entity" options="-parameters" />
       <module name="blog-server-gateway" options="-parameters" />

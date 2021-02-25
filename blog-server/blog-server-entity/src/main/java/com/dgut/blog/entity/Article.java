@@ -97,4 +97,10 @@ public class Article {
      */
     @Transient
     private List<Tag> tags;
+
+    /**
+     * 文章临时标签（类别）（不对该字段持久化）
+     */
+    @Transient
+    private String[] dynamicTags;
 }

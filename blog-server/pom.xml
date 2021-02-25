@@ -15,6 +15,7 @@
         <module>blog-server-biz</module>
         <module>blog-server-controller</module>
         <module>blog-server-gateway</module>
+        <module>blog-server-common</module>
     </modules>
     <dependencies>
 
