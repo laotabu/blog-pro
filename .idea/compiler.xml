@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="blog-server-entity" />
         <module name="blog-server-common" />
-        <module name="blog-server-gateway" />
         <module name="blog-server-biz" />
         <module name="blog-server-controller" />
+        <module name="blog-server-gateway" />
+        <module name="blog-server-entity" />
       </profile>
     </annotationProcessing>
   </component>

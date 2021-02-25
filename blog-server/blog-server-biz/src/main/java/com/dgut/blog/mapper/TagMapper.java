@@ -12,6 +12,11 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface TagMapper extends BaseMapper<Tag> {
+
+    boolean removeTagsByArticleId(Long articleId);
+
+
+
 //    int deleteTagsByAid(Long aid);
 //
 //    int saveTags(@Param("tags") String[] tags);

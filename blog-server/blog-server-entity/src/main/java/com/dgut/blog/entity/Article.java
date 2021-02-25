@@ -102,5 +102,5 @@ public class Article {
      * 文章临时标签（类别）（不对该字段持久化）
      */
     @Transient
-    private String[] dynamicTags;
+    private List<String> dynamicTags;
 }

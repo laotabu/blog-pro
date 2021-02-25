@@ -3,6 +3,8 @@ package com.dgut.blog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dgut.blog.entity.Tag;
 
+import java.util.List;
+
 /**
  * @author: lishengdian | 932978775@qq.com
  * @version: 1.0.0
@@ -11,5 +13,5 @@ import com.dgut.blog.entity.Tag;
  */
 public interface TagService extends IService<Tag> {
 
-
+    boolean removeTagsByArticleId(Long articleId);
 }

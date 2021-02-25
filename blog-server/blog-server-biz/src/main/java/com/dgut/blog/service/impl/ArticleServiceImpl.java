@@ -2,15 +2,18 @@ package com.dgut.blog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dgut.blog.entity.Article;
+import com.dgut.blog.entity.Tag;
 import com.dgut.blog.mapper.ArticleMapper;
 import com.dgut.blog.service.ArticleService;
 import com.dgut.blog.utls.CustomUtils;
+import com.dgut.blog.vo.ArticleTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -25,8 +28,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     CustomUtils customUtils;
 
     @Autowired
+    ArticleTagServiceImpl articleTagService;
+
+    @Autowired
     TagServiceImpl tagService;
 
+    @Autowired
+    ArticleMapper articleMapper;
+
+    /**
+     *  增加或更新文章
+     * @param article
+     * @return
+     */
     @Override
     public boolean addNewArticle(Article article) {
         //处理文章摘要
@@ -36,58 +50,120 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                     .subStringHtmlContent(customUtils
                             .stripHtml(article.getHtmlContent()), 50));
         }
-
-        if (article.getId() == -1) {
-            //添加操作
-            LocalDateTime now = LocalDateTime.now();
-            if (article.getState() == 1) {
-                //设置发表日期
-                article.setPublishDate(now);
-            }
-            article.setEditTime(now);
-            //设置当前用户
-            article.setUserId(customUtils
-                    .getCurrentUser()
-                    .getId()
-            );
-            // 保存文章
-            this.save(article);
-            //打标签
-            String[] dynamicTags = article.getDynamicTags();
-            if (dynamicTags != null && dynamicTags.length > 0) {
-                tagService
-            }
-            return i;
-        } else {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            if (article.getState() == 1) {
-                //设置发表日期
-                article.setPublishDate(timestamp);
-            }
-            //更新
-            article.setEditTime(new Timestamp(System.currentTimeMillis()));
-            int i = articleMapper.updateArticle(article);
-            //修改标签
-            String[] dynamicTags = article.getDynamicTags();
-            if (dynamicTags != null && dynamicTags.length > 0) {
-                int tags = addTagsToArticle(dynamicTags, article.getId());
-                if (tags == -1) {
-                    return tags;
-                }
-            }
-            return i;
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+        // 获取文章标签
+        List<String> dynamicTags = article.getDynamicTags();
+        // 判断文章是否有效
+        if (article.getState() == 1) {
+            //设置发表日期
+            article.setPublishDate(now);
         }
+        // 设置编辑时间
+        article.setEditTime(now);
+        // 设置当前用户
+        article.setUserId(customUtils
+                .getCurrentUser()
+                .getId()
+        );
+        if (dynamicTags != null && dynamicTags.isEmpty()) {
+            // 给文章重新设置标签
+            addTagsToArticle(dynamicTags, article.getId());
+        }
+        return  this.saveOrUpdate(article);
     }
 
-    private int addTagsToArticle(String[] dynamicTags, Long aid) {
-        //1.删除该文章目前所有的标签
-        tagsMapper.deleteTagsByAid(aid);
-        //2.将上传上来的标签全部存入数据库
-        tagsMapper.saveTags(dynamicTags);
-        //3.查询这些标签的id
-        List<Long> tIds = tagsMapper.getTagsIdByTagName(dynamicTags);
-        //4.重新给文章设置标签
-        int i = tagsMapper.saveTags2ArticleTags(tIds, aid);
-        return i == dynamicTags.length ? i : -1;
+    /**
+     * 根据文章标题（模糊字段）和用户Id获取有效的文章数量
+     * @param state 文章状态
+     * @param userId 用户Id
+     * @param keywords 文章标题（模糊字段）
+     * @return
+     */
+    @Override
+    public int getArticleCountByStateAndKeywords(Integer state, Long userId, String keywords) {
+        return articleMapper.getArticleCountByStateAndKeywords(state, userId, keywords);
     }
+
+    /**
+     * 根据文章Id批量更新文章状态
+     * @param articleIds
+     * @param state
+     * @return
+     */
+    @Override
+    public boolean updateArticleStateByIds(List<Long> articleIds, Integer state) {
+        return this.lambdaUpdate()
+                .in(Article::getId, articleIds)
+                .set(Article::getState, state)
+                .update();
+    }
+
+    /**
+     * 根据文章Id更新文章状态
+     * @param articleId
+     * @param state
+     * @return
+     */
+    @Override
+    public boolean updateArticleStateById(Integer articleId, Integer state) {
+        return this.lambdaUpdate()
+                .eq(Article::getId, articleId)
+                .set(Article::getState, state)
+                .update();
+    }
+
+    /***
+     * 每天更新用户阅读总量
+     */
+    @Override
+    public void userViewsStatisticsPerDay() {
+
+    }
+
+
+    private void addTagsToArticle(List<String> dynamicTags, Long aid) {
+
+        // 根据文章Id获取TagId列表
+        List<Long> tagIds = articleTagService.getTagIdsByArticleId(aid);
+
+        // 根据文章Id删除原先关联记录(articleTag)
+        articleTagService.removeByArticleId(aid);
+
+        // 根据文章Id删除对应的Tags
+        tagService.removeByIds(tagIds);
+
+        // 生成tags列表
+        List<Tag> tags = new ArrayList<Tag>();
+        dynamicTags.forEach(item -> {
+            Tag tag = new Tag();
+            tag.setTagName(item);
+            tags.add(tag);
+        });
+
+        //存储tags
+        tagService.saveBatch(tags);
+
+        // 输出tags列表(可删掉，测试用)
+        tags.stream().forEach(System.out::println);
+
+//        //3.查询这些标签的id
+//        List<Long> tIds = tagsMapper.getTagsIdByTagName(dynamicTags);
+
+        // 获取新的Tag的Id列表
+        List<Long> newTagIds = tags.stream().map(Tag::getId).collect(Collectors.toList());
+
+        // 生成tag与article的关联列表
+        List<ArticleTag> articleTags = new ArrayList<>();
+        newTagIds.forEach(item -> {
+            ArticleTag articleTag = new ArticleTag();
+            articleTag.setArticleId(aid);
+            articleTag.setTagId(item);
+            articleTags.add(articleTag);
+        });
+        // 存储关联信息
+        articleTagService.saveBatch(articleTags);
+    }
+
+
 }

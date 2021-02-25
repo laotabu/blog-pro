@@ -1,12 +1,10 @@
 package com.dgut.blog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dgut.blog.entity.Role;
 import com.dgut.blog.entity.Tag;
-import com.dgut.blog.mapper.RoleMapper;
 import com.dgut.blog.mapper.TagMapper;
-import com.dgut.blog.service.RoleService;
 import com.dgut.blog.service.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,4 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagService {
 
+    @Autowired
+    TagMapper tagMapper;
+
+    @Override
+    public boolean removeTagsByArticleId(Long articleId) {
+        return tagMapper.removeTagsByArticleId(articleId);
+    }
 }
