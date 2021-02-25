@@ -16,8 +16,6 @@
     <modules>
         <module>blog-server</module>
         <module>blog-server/blog-server-entity</module>
-        <module>blog-server-biz</module>
-        <module>blog-server-biz</module>
         <module>blog-server/blog-server-biz</module>
         <module>blog-server/blog-server-controller</module>
         <module>blog-server/blog-server-gateway</module>
