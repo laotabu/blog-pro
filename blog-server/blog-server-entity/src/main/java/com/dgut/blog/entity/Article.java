@@ -103,4 +103,16 @@ public class Article {
      */
     @Transient
     private List<String> dynamicTags;
+
+    /**
+     * 用户别名（不对该字段持久化）
+     */
+    @Transient
+    private String nickname;
+
+    /**
+     * 文章栏目名（不对该字段持久化）
+     */
+    @Transient
+    private String cateName;
 }

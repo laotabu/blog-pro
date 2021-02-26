@@ -13,5 +13,12 @@ import java.util.List;
  */
 public interface TagService extends IService<Tag> {
 
-    boolean removeTagsByArticleId(Long articleId);
+
+
+    List<Long> getTagsIdByTagName(List<String> tagNames);
+
+
+    boolean saveTags(List<String> tags);
+
+
 }

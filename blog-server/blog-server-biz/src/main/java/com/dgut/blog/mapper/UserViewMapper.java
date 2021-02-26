@@ -1,20 +1,17 @@
 package com.dgut.blog.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dgut.blog.entity.Role;
+import com.dgut.blog.vo.UserView;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 /**
  * @author: lishengdian | 932978775@qq.com
  * @version: 1.0.0
- * @description: 用户角色类mapper文件
+ * @description: 用户浏览量mapper文件
  * @createDate: 2021/2/25
  */
 @Mapper
-public interface RoleMapper extends BaseMapper<Role> {
+public interface UserViewMapper extends BaseMapper<UserView> {
 
-    List<Role> getRolesByUserId(Long userId);
-
+    void userViewsStatisticsPerDay();
 }

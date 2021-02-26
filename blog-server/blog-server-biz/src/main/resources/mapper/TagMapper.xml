@@ -2,11 +2,5 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dgut.blog.mapper.TagMapper">
 
-<!--    <delete id="removeTagsByArticleId">-->
-<!--        DELETE article_tag,tag-->
-<!--        from article_tag LEFT JOIN tag-->
-<!--        ON article_tag.tag_id=tag.id-->
-<!--        WHERE article_tag.articleId=#{articleId}-->
-<!--    </delete>-->
 
 </mapper>

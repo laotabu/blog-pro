@@ -114,12 +114,38 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     /***
-     * 每天更新用户阅读总量
+     * 根据用户Id，文章状态批量获取文章列表
+     * @param state 文章状态
+     * @param start 文章列表起始节点
+     * @param count 文章数量
+     * @param userId 用户id
+     * @param keywords 文章标题（模糊字段）
+     * @return
      */
     @Override
-    public void userViewsStatisticsPerDay() {
-
+    public List<Article> getArticlesByStateAndCountAndUserId(Integer state, Integer start, Integer count, Long userId, String keywords) {
+        return articleMapper.getArticlesByStateAndCountAndUserId(state, start, count, userId, keywords);
     }
+
+    /***
+     * 根据文章Id获取文章信息
+     * @param articleId
+     * @return
+     */
+    @Override
+    public Article getArticleByArticleId(Long articleId) {
+        return articleMapper.getArticleByArticleId(articleId);
+    }
+
+    /***
+     * 增加文章阅读量
+     * @param articleId
+     */
+    @Override
+    public void userViewIncrement(Long articleId) {
+        articleMapper.userViewIncrement(articleId);
+    }
+
 
 
     private void addTagsToArticle(List<String> dynamicTags, Long aid) {
@@ -164,6 +190,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 存储关联信息
         articleTagService.saveBatch(articleTags);
     }
+
 
 
 }

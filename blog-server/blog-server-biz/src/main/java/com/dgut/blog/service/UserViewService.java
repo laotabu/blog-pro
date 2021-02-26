@@ -3,6 +3,10 @@ package com.dgut.blog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dgut.blog.vo.UserView;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 /***
  *
  *@author: lishengdian / 932978775@qq.com
@@ -11,4 +15,14 @@ import com.dgut.blog.vo.UserView;
  *
  */
 public interface UserViewService extends IService<UserView> {
+
+    void userViewsStatisticsPerDay();
+
+    void userViewIncrement(Long articleId);
+
+    List<LocalDateTime> getStatisticalTimesByUserId(Long userId);
+
+    List<Long> getStatisticalDataByUserId(Long userId);
+
+    List<UserView> getUserViewByUserId(Long userId);
 }

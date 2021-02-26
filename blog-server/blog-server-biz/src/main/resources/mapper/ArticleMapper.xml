@@ -2,8 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dgut.blog.mapper.ArticleMapper">
 
-    <select id="getArticleCountByStateAndKeywords">
-        SELECT count(*) FROM article
+    <resultMap id="BaseResultMap" type="com.dgut.blog.entity.Article">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="user_id" property="userId"/>
+        <result column="publish_date" property="publishDate"/>
+        <result column="edit_time" property="editTime"/>
+        <result column="state" property="state"/>
+        <result column="page_view" property="pageView"/>
+        <result column="md_content" property="mdContent"/>
+        <result column="html_content" property="htmlContent"/>
+        <result column="summary" property="summary"/>
+        <result column="nickname" property="nickname"/>
+        <result column="cateName" property="cateName"/>
+        <collection property="tags" ofType="com.dgut.blog.entity.Tag" column="tagName">
+            <id property="id" column="id"/>
+            <result property="tagName" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="getArticleCountByStateAndKeywords" resultType="int">
+        SELECT count(*)
+        FROM article
         <where>
             <if test="state!=-1">
                 AND state=#{state}
@@ -16,5 +38,42 @@
             </if>
         </where>
     </select>
+
+    <select id="getArticlesByStateAndCountAndUserId" resultType="com.dgut.blog.entity.Article">
+        SELECT a.id,a.`title`,a.`edit_time`,a.`page_view`,a.`state`,u.`nickname`,c.`cate_name`,a.user_id
+        FROM article a,user u,category c
+        WHERE a.`category_id`=c.`id` AND a.`user_id`=u.`id`
+        <if test="state!=-2">
+            and a.user_id=#{userId}
+        </if>
+        <if test="state!=-1 and state!=-2">
+            and a.state=#{state}
+        </if>
+        <if test="state==-2">
+            and a.state=1
+        </if>
+        <if test="keywords!=null">
+            AND title LIKE concat('%',#{keywords},'%')
+        </if>
+        ORDER BY a.edit_time DESC limit #{start},#{count};
+    </select>
+
+
+    <select id="getArticleByArticleId" resultMap="BaseResultMap">
+        SELECT a.*,t.`tag_name`,t.`id` AS tid,u.`nickname`,c.`cate_name`
+        FROM article a LEFT JOIN article_tag at
+        ON a.`id`=at.`article_id` LEFT JOIN tag t
+        ON at.`tag_id`=t.`id` LEFT JOIN user u
+        ON a.`user_id`=u.`id` LEFT JOIN category c
+        ON a.`category_id`=c.`id`
+        WHERE a.id=#{articleId}
+    </select>
+
+    <update id="userViewIncrement">
+        UPDATE article
+        set page_view=page_view+1
+        WHERE id=#{articleId}
+    </update>
+
 
 </mapper>

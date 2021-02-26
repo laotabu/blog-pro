@@ -12,11 +12,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CategoryMapper extends BaseMapper<Category> {
-//    List<Category> getAllCategories();
-//
-//    int deleteCategoryByIds(@Param("ids") String[] ids);
-//
-//    int updateCategoryById(Category category);
-//
-//    int addCategory(Category category);
+
 }

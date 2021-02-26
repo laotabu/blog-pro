@@ -12,6 +12,7 @@ import java.util.List;
  * @createDate: 2021/2/25
  */
 public interface ArticleService extends IService<Article> {
+
     boolean addNewArticle(Article article);
 
     int getArticleCountByStateAndKeywords(Integer state, Long uid, String keywords);
@@ -20,5 +21,11 @@ public interface ArticleService extends IService<Article> {
 
     boolean updateArticleStateById(Integer articleId,  Integer state);
 
-    void userViewsStatisticsPerDay();
+    List<Article> getArticlesByStateAndCountAndUserId(Integer state, Integer start, Integer count, Long userId, String keywords);
+
+    Article getArticleByArticleId(Long articleId);
+
+    void userViewIncrement(Long aid);
+
+    //void pvStatisticsPerDay();
 }
