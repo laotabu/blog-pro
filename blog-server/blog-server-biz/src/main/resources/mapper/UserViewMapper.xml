@@ -9,3 +9,4 @@
         WHERE p.`uid`=t.`uid`
     </insert>
 
+</mapper>

@@ -1,13 +1,17 @@
 package com.dgut.blog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dgut.blog.entity.Role;
 import com.dgut.blog.entity.User;
 import com.dgut.blog.mapper.UserMapper;
+import com.dgut.blog.service.RoleService;
+import com.dgut.blog.service.UserRoleService;
 import com.dgut.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +26,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    UserRoleService userRoleService;
+
+    @Autowired
+    RoleService roleService;
+
+//    @Autowired
+//    PasswordEncoder passwordEncoder
 
     /***
      * 根据用户名获取用户
@@ -29,20 +41,45 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public User getUserByUsername(String username) {
-        return this.lambdaQuery()
+    public UserDetails getUserByUsername(String username) {
+        User user = this.lambdaQuery()
                 .eq(User::getUsername, username)
                 .one();
+        if (user == null) {
+            user = new User();
+        }
+        user.setRoles(roleService
+                .getRolesByUserId(user.getId()));
+        return user;
     }
 
     /**
      * 注册用户
      * @param user 用户对象
      * @return
+     * 0 - 成功
+     * 1 - 用户名重复
      */
     @Override
-    public boolean registerUser(User user) {
-        return this.save(user);
+    public int registerUser(User user) {
+        // 密码加密
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setEnabled(true);
+        if (!this.save(user)) {
+            // 用户名重复
+            return 1;
+        }
+        // 默认配置普通用户
+        List<Long> rolesIds = new ArrayList<>();
+        rolesIds.add(2L);
+        boolean result = userRoleService.addRolesByUserId(rolesIds, user.getId());
+        if (result) {
+            // 插入成功
+            return 0;
+        }else {
+            // 插入失败
+            return 1;
+        }
     }
 
     /**

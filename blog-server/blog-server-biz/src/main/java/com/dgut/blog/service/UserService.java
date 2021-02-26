@@ -3,6 +3,7 @@ package com.dgut.blog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dgut.blog.entity.Role;
 import com.dgut.blog.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ import java.util.List;
  */
 public interface UserService extends IService<User> {
 
-    User getUserByUsername(String username);
+    UserDetails getUserByUsername(String username);
 
-    boolean registerUser(User user);
+    int registerUser(User user);
 
     boolean updateUserEmailByUserId(String email, Long userId);
 

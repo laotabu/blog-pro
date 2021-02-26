@@ -6,6 +6,7 @@ import com.dgut.blog.mapper.UserRoleMapper;
 import com.dgut.blog.service.UserRoleService;
 import com.dgut.blog.vo.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @description: 用户实体类与角色类关联表Service服务实现类
  * @createDate: 2021/2/26
  */
+@Service
 public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> implements UserRoleService {
 
     @Autowired

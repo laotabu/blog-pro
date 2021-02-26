@@ -5,6 +5,8 @@ import com.dgut.blog.entity.Article;
 import com.dgut.blog.entity.Tag;
 import com.dgut.blog.mapper.ArticleMapper;
 import com.dgut.blog.service.ArticleService;
+import com.dgut.blog.service.ArticleTagService;
+import com.dgut.blog.service.TagService;
 import com.dgut.blog.utls.CustomUtils;
 import com.dgut.blog.vo.ArticleTag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     CustomUtils customUtils;
 
     @Autowired
-    ArticleTagServiceImpl articleTagService;
+    ArticleTagService articleTagService;
 
     @Autowired
-    TagServiceImpl tagService;
+    TagService tagService;
 
     @Autowired
     ArticleMapper articleMapper;

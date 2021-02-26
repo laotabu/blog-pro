@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dgut.blog.mapper.UserMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.dgut.blog.entity.User">
+        <id column="id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="nickname" property="nickname"/>
+        <result column="password" property="password"/>
+        <result column="enabled" property="enabled"/>
+        <result column="email" property="email"/>
+        <result column="icon" property="icon"/>
+        <result column="register_date" property="registerDate"/>
+        <collection property="roles" ofType="com.dgut.blog.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="roleName"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="getUsersByNickname" resultMap="BaseResultMap">
+        SELECT u.*,r.`id` AS rid,r.`name` AS rname
+        FROM user u,role r,user_role ur
+        WHERE u.`id`=ur.`user_id`
+        AND r.`id`=ur.`role_id`
+        AND u.`id` NOT IN
+        (SELECT u.`id`
+        FROM user u,user_role ur
+        WHERE u.`id`=ur.`user_id` AND ur.`role_id`=1)
+        <choose>
+            <when test="nickname!=null and nickname!=''">
+                and u.nickname like concat('%',#{nickname},'%') ORDER BY u.`id`
+            </when>
+            <otherwise>
+                ORDER BY u.`id` limit 20
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getUserByUserId" resultType="com.dgut.blog.entity.User">
+        SELECT u.*,r.`id` AS rid,r.`name` AS rname
+        FROM user u,role r,user_role ur
+        WHERE
+        u.`id`=ur.`user_id` AND
+        r.`id`=ur.`role_id` AND u.`id`=#{userId}
+    </select>
+
+    <update id="updateUserState">
+        UPDATE user set enabled=#{state} WHERE id=#{userId}
+    </update>
+
+
+
+</mapper>

@@ -38,7 +38,8 @@ public class User implements UserDetails {
     /**
      * 用户名
      */
-    @Column(columnDefinition = "varchar(36) not null comment '用户名'")
+    @Column(unique = true,
+            columnDefinition = "varchar(36) not null comment '用户名'")
     private String userName;
 
     /**
