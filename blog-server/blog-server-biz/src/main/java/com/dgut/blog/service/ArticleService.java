@@ -19,13 +19,20 @@ public interface ArticleService extends IService<Article> {
 
     boolean updateArticleStateByIds(List<Long> articleIds, Integer state);
 
-    boolean updateArticleStateById(Integer articleId,  Integer state);
+    boolean updateArticleStateById(Long articleId,  Integer state);
 
     List<Article> getArticlesByStateAndCountAndUserId(Integer state, Integer start, Integer count, Long userId, String keywords);
 
     Article getArticleByArticleId(Long articleId);
 
     void userViewIncrement(Long aid);
+
+    boolean restoreArticleByArticleId(Long articleId);
+
+    boolean updateArticleByStateAndArticleId(Long articleId,  Integer state);
+
+
+
 
     //void pvStatisticsPerDay();
 }

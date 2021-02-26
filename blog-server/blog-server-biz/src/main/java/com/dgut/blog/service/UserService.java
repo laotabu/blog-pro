@@ -29,4 +29,5 @@ public interface UserService extends IService<User> {
 
     boolean deleteUserByUserId(Long uid);
 
+    boolean updateUserRoles(List<Long> rids, Long id);
 }

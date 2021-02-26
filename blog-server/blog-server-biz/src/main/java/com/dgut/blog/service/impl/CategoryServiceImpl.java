@@ -9,7 +9,9 @@ import com.dgut.blog.service.ArticleService;
 import com.dgut.blog.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -21,12 +23,26 @@ import java.util.List;
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
 
     /***
-     * 获取所有文章栏目
+     * 获取所有文章栏目对象
      * @return
      */
     @Override
-    public List<Category> getAllCategories() {
+    public List<Category> getAllCategory() {
         return this.lambdaQuery().list();
+    }
+
+    /***
+     * 获取所有文章栏目名
+     * @return
+     */
+    @Override
+    public List<String> getAllCateName() {
+        List<String> strings = new ArrayList<>();
+        List<Category> categorys = this.getAllCategory();
+        if (!categorys.isEmpty()){
+            strings = categorys.stream().map(Category::getCateName).collect(Collectors.toList());
+        }
+        return strings;
     }
 
     /**

@@ -13,7 +13,9 @@ import java.util.List;
  */
 public interface CategoryService extends IService<Category> {
 
-    List<Category> getAllCategories();
+    List<Category> getAllCategory();
+
+    List<String> getAllCateName();
 
     boolean deleteCategoryByIds(List<Long> ids);
 

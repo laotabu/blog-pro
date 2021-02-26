@@ -63,8 +63,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public int registerUser(User user) {
         // 密码加密
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        user.setEnabled(true);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(true);
         if (!this.save(user)) {
             // 用户名重复
             return 1;
@@ -130,6 +130,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean deleteUserByUserId(Long userId) {
         return this.removeById(userId);
+    }
+
+
+    /**
+     * 更新用户角色
+     * @param rids
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean updateUserRoles(List<Long> rids, Long id) {
+        userRoleService.deleteUserRolesByUserid(id);
+        return userRoleService.addRolesByUserId(rids, id);
     }
 
 

@@ -88,7 +88,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     /**
-     * 根据文章Id批量更新文章状态
+     * 根据文章Id批量更新文章状态（基础服务）
      * @param articleIds
      * @param state
      * @return
@@ -108,7 +108,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return
      */
     @Override
-    public boolean updateArticleStateById(Integer articleId, Integer state) {
+    public boolean updateArticleStateById(Long articleId, Integer state) {
         return this.lambdaUpdate()
                 .eq(Article::getId, articleId)
                 .set(Article::getState, state)
@@ -148,7 +148,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         articleMapper.userViewIncrement(articleId);
     }
 
+    /***
+     * 根据文件编号从回收站回收文件
+     * @param articleId
+     * @return
+     */
+    @Override
+    public boolean restoreArticleByArticleId(Long articleId) {
+        return this.updateArticleStateById(articleId, 1);
+    }
 
+    /**
+     * 根据文件编号更新文件状态（包括删除，放入回收站两种情况）
+     * @param articleId
+     * @return
+     */
+    @Override
+    public boolean updateArticleByStateAndArticleId(Long articleId,  Integer state) {
+        if (state == 2) {
+            return this.removeById(articleId);
+        } else {
+            //放入到回收站中
+            return this.updateArticleStateById(articleId, 2);
+        }
+    }
 
     private void addTagsToArticle(List<String> dynamicTags, Long aid) {
 
