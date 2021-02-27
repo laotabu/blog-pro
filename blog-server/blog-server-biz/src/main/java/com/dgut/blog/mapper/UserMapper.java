@@ -21,4 +21,5 @@ public interface UserMapper extends BaseMapper<User> {
 
     boolean updateUserState(Boolean state, Long userId);
 
+    boolean removeUserById(Long userId);
 }

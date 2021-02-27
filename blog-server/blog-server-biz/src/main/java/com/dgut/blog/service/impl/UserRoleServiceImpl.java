@@ -8,7 +8,9 @@ import com.dgut.blog.vo.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -39,9 +41,8 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
      */
     @Override
     public boolean deleteUserRolesByUserid(Long userId) {
-        return this.remove(this
-                .lambdaQuery()
-                .eq(UserRole::getUserId
-                        , userId));
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("user_id", userId);
+        return this.removeByMap(maps);
     }
 }

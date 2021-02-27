@@ -18,11 +18,18 @@
         </collection>
     </resultMap>
 
-
+    <delete id="removeUserById">
+            DELETE user,
+            user_role
+            FROM user
+            LEFT JOIN user_role
+            ON user.id=user_role.user_id
+            where user.id = #{userId}
+    </delete>
 
 
     <select id="getUsersByNickname" resultMap="BaseResultMap">
-        SELECT u.*,r.`id` AS rid,r.`name` AS rname
+        SELECT u.*,r.`id` AS rid,r.`role_name` AS rname
         FROM user u,role r,user_role ur
         WHERE u.`id`=ur.`user_id`
         AND r.`id`=ur.`role_id`
@@ -39,8 +46,8 @@
             </otherwise>
         </choose>
     </select>
-    <select id="getUserByUserId" resultType="com.dgut.blog.entity.User">
-        SELECT u.*,r.`id` AS rid,r.`name` AS rname
+    <select id="getUserByUserId" resultMap="BaseResultMap">
+        SELECT u.*,r.`id` AS rid,r.`role_name` AS rname
         FROM user u,role r,user_role ur
         WHERE
         u.`id`=ur.`user_id` AND

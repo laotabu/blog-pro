@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,9 +64,9 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/article/dustbin", method = RequestMethod.PUT)
-    public ResponseDTO updateArticleState(List<Long> aids, Integer state) {
+    public ResponseDTO updateArticleState(Long[] aids, Integer state) {
         System.out.println("文章编号" + aids);
-        if (articleService.updateArticleStateByIds(aids, state)) {
+        if (articleService.updateArticleByStateAndArticleId(Arrays.asList(aids), state)) {
             return new ResponseDTO("success", "删除成功!");
         }
         return new ResponseDTO("error", "删除失败!");

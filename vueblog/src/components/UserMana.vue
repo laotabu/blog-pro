@@ -19,7 +19,7 @@
           </el-button>
         </div>
         <div>
-          <div><img :src="user.userface" :alt="user.nickname" style="width: 70px;height: 70px"></div>
+          <div><img :src="user.icon" :alt="user.nickname" style="width: 70px;height: 70px"></div>
           <div style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px">
             <span>用户名:</span><span>{{user.username}}</span>
           </div>
@@ -27,7 +27,7 @@
             <span>电子邮箱:</span><span>{{user.email}}</span>
           </div>
           <div style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px">
-            <span>注册时间:</span><span>{{user.regTime | formatDateTime}}</span>
+            <span>注册时间:</span><span>{{user.registerDate | formatDateTime}}</span>
           </div>
           <div
             style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px;display: flex;align-items: center">
@@ -48,7 +48,7 @@
               size="mini"
               style="margin-right: 8px"
               type="success">
-              {{role.name}}
+              {{role.roleName}}
             </el-tag>
             <el-popover
               placement="right"
@@ -61,7 +61,7 @@
                 <el-option
                   v-for="(item,index) in allRoles"
                   :key="user.id+'-'+item.id"
-                  :label="item.name"
+                  :label="item.roleName"
                   :value="item.id">
                 </el-option>
               </el-select>

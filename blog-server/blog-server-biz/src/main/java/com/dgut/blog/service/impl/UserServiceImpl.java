@@ -102,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
-     * 根据用户Id设置用户状态
+     * 根据用户Id删除用户
      * @param state 用户状态
      * @param userId 用户Id
      * @return
@@ -114,7 +114,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean deleteUserByUserId(Long userId) {
-        return this.removeById(userId);
+        return userMapper.removeUserById(userId);
     }
 
 

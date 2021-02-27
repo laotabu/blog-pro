@@ -96,6 +96,7 @@ public class UserManaController {
      */
     @RequestMapping(value = "/user/role", method = RequestMethod.PUT)
     public ResponseDTO updateUserRoles(Long[] rids, Long id) {
+        System.out.println("要更新的角色的角色id为： " + rids);
         if (userService.updateUserRoles(Arrays.asList(rids), id)) {
             return new ResponseDTO("success", "更新成功!");
         } else {
