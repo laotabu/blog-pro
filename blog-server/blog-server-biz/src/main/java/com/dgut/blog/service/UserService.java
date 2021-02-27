@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface UserService extends IService<User> {
 
-    UserDetails getUserByUsername(String username);
+
 
     int registerUser(User user);
 

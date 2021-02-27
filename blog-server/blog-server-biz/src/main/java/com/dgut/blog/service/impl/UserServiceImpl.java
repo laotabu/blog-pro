@@ -8,6 +8,8 @@ import com.dgut.blog.service.UserRoleService;
 import com.dgut.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ import java.util.List;
  * @createDate: 2021/2/25
  */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
 
     @Autowired
     UserMapper userMapper;
@@ -32,26 +34,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     RoleService roleService;
 
-//    @Autowired
-//    PasswordEncoder passwordEncoder
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-    /***
-     * 根据用户名获取用户
-     * @param username 用户名
-     * @return
-     */
-    @Override
-    public UserDetails getUserByUsername(String username) {
-        User user = this.lambdaQuery()
-                .eq(User::getUsername, username)
-                .one();
-        if (user == null) {
-            user = new User();
-        }
-        user.setRoles(roleService
-                .getRolesByUserId(user.getId()));
-        return user;
-    }
 
     /**
      * 注册用户
@@ -146,4 +131,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
 
+    /***
+     * 根据用户名获取用户
+     * @param username 用户名
+     * @return
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = this.lambdaQuery()
+                .eq(User::getUsername, username)
+                .one();
+        if (user == null) {
+            user = new User();
+        }
+        user.setRoles(roleService
+                .getRolesByUserId(user.getId()));
+        return user;
+    }
 }
