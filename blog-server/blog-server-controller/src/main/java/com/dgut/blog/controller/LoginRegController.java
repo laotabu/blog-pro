@@ -4,6 +4,7 @@ package com.dgut.blog.controller;
 import com.dgut.blog.dto.ResponseDTO;
 import com.dgut.blog.entity.User;
 import com.dgut.blog.service.UserService;
+import com.dgut.blog.utls.CustomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,8 @@ public class LoginRegController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CustomUtils customUtils;
     /**
      * 登录失败
      * @return
@@ -36,6 +39,7 @@ public class LoginRegController {
      */
     @RequestMapping("/login_success")
     public ResponseDTO loginSuccess() {
+        System.out.println("当前用户ID为： " + customUtils.getCurrentUser().getId());
         return new ResponseDTO("success", "登录成功!");
     }
 

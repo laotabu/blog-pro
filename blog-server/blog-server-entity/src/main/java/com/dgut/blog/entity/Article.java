@@ -96,23 +96,27 @@ public class Article {
      * 文章所属类型列表（不对该字段持久化）
      */
     @Transient
+    @TableField(exist = false)
     private List<Tag> tags;
 
     /**
      * 文章临时标签（类别）（不对该字段持久化）
      */
     @Transient
+    @TableField(exist = false)
     private List<String> dynamicTags;
 
     /**
      * 用户别名（不对该字段持久化）
      */
     @Transient
+    @TableField(exist = false)
     private String nickname;
 
     /**
      * 文章栏目名（不对该字段持久化）
      */
     @Transient
+    @TableField(exist = false)
     private String cateName;
 }

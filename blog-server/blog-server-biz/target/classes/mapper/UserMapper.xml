@@ -19,6 +19,8 @@
     </resultMap>
 
 
+
+
     <select id="getUsersByNickname" resultMap="BaseResultMap">
         SELECT u.*,r.`id` AS rid,r.`name` AS rname
         FROM user u,role r,user_role ur

@@ -49,7 +49,7 @@ public class ArticleController {
      * @return
      */
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseDTO addNewArticle(@RequestBody Article article) {
+    public ResponseDTO addNewArticle(Article article) {
         System.out.println("新增文章" + article);
         if (articleService.addNewArticle(article)) {
             return new ResponseDTO("success", article.getId() + "");
@@ -101,7 +101,8 @@ public class ArticleController {
     public Map<String, Object> getArticlesByState(@RequestParam(value = "state", defaultValue = "-1") Integer state,
                                                  @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                  @RequestParam(value = "count", defaultValue = "6") Integer count,
-                                                 String keywords) {
+                                                  String keywords) {
+        //System.out.println("当前用户Id： " + customUtils.getCurrentUser().getId());
         int totalCount = articleService
                 .getArticleCountByStateAndKeywords(state,
                         customUtils.getCurrentUser().getId(),
@@ -112,7 +113,7 @@ public class ArticleController {
                         count,
                         customUtils.getCurrentUser().getId(),
                         keywords);
-
+        //System.out.println("对应列表为： " + articles);
         Map<String, Object> map = new HashMap<>();
         map.put("totalCount", totalCount);
         map.put("articles", articles);
@@ -136,8 +137,11 @@ public class ArticleController {
      * @return
      */
     @RequestMapping(value = "/dustbin", method = RequestMethod.PUT)
-    public ResponseDTO updateArticleState(List<Long> aids, Integer state) {
-        if (articleService.updateArticleStateByIds(aids, state)) {
+    public ResponseDTO updateArticleState(Long[] aids, Integer state) {
+        List<Long> longs = Arrays.asList(aids);
+        System.out.println("删除的文章Id为：");
+        longs.stream().forEach(System.out::println);
+        if (articleService.updateArticleByStateAndArticleId(longs, state)) {
             return new ResponseDTO("success", "删除成功!");
         }
         return new ResponseDTO("error", "删除失败!");
@@ -150,6 +154,7 @@ public class ArticleController {
      */
     @RequestMapping(value = "/restore", method = RequestMethod.PUT)
     public ResponseDTO restoreArticle(Long articleId) {
+        System.out.println("还原文章开始，文章Id为： " + articleId.toString());
         if (articleService.restoreArticleByArticleId(articleId)) {
             return new ResponseDTO("success", "还原成功!");
         }

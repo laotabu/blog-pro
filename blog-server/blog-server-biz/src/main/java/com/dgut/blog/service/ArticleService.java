@@ -29,7 +29,7 @@ public interface ArticleService extends IService<Article> {
 
     boolean restoreArticleByArticleId(Long articleId);
 
-    boolean updateArticleByStateAndArticleId(Long articleId,  Integer state);
+    boolean updateArticleByStateAndArticleId(List<Long>  articleId,  Integer state);
 
 
 

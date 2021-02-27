@@ -1,6 +1,7 @@
 package com.dgut.blog.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,7 +46,7 @@ public class User implements UserDetails {
     /**
      * 用户密码
      */
-    @Column(columnDefinition = "varchar(36) not null comment '用户密码'")
+    @Column(columnDefinition = "varchar(255) not null comment '用户密码'")
     private String password;
 
     /**
@@ -86,6 +87,7 @@ public class User implements UserDetails {
      * 用户角色列表
      */
     @Transient
+    @TableField(exist = false)
     List<Role> roles;
 
 

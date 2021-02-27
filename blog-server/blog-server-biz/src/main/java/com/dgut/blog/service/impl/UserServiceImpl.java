@@ -138,6 +138,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("认证逻辑开始，用户名：" + username);
         User user = this.lambdaQuery()
                 .eq(User::getUsername, username)
                 .one();
@@ -146,6 +147,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         user.setRoles(roleService
                 .getRolesByUserId(user.getId()));
+        System.out.println("查询到的用户为： " + user);
         return user;
     }
 }

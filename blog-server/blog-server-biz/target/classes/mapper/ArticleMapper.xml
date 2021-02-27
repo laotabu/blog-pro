@@ -30,8 +30,8 @@
             <if test="state!=-1">
                 AND state=#{state}
             </if>
-            <if test="uid!=null">
-                AND user_id=#{uid}
+            <if test="userId!=null">
+                AND user_id=#{userId}
             </if>
             <if test="keywords!=null">
                 AND title LIKE concat('%',#{keywords},'%')

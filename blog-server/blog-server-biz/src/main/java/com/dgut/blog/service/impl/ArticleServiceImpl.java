@@ -52,10 +52,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                     .subStringHtmlContent(customUtils
                             .stripHtml(article.getHtmlContent()), 50));
         }
+
         // 获取当前时间
         LocalDateTime now = LocalDateTime.now();
+
         // 获取文章标签
         List<String> dynamicTags = article.getDynamicTags();
+
         // 判断文章是否有效
         if (article.getState() == 1) {
             //设置发表日期
@@ -68,7 +71,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .getCurrentUser()
                 .getId()
         );
-        if (dynamicTags != null && dynamicTags.isEmpty()) {
+        System.out.println("处理后文章为：" + article);
+        if (dynamicTags != null && !dynamicTags.isEmpty()) {
             // 给文章重新设置标签
             addTagsToArticle(dynamicTags, article.getId());
         }
@@ -164,12 +168,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return
      */
     @Override
-    public boolean updateArticleByStateAndArticleId(Long articleId,  Integer state) {
+    public boolean updateArticleByStateAndArticleId(List<Long> articleId,  Integer state) {
         if (state == 2) {
-            return this.removeById(articleId);
+            return this.removeByIds(articleId);
         } else {
             //放入到回收站中
-            return this.updateArticleStateById(articleId, 2);
+            return this.updateArticleStateByIds(articleId, 2);
         }
     }
 
@@ -177,7 +181,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         // 根据文章Id获取TagId列表
         List<Long> tagIds = articleTagService.getTagIdsByArticleId(aid);
-
+        System.out.println("文章原先的Id为" + tagIds);
         // 根据文章Id删除原先关联记录(articleTag)
         articleTagService.removeByArticleId(aid);
 
