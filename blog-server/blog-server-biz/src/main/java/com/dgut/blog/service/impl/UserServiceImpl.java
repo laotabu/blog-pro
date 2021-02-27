@@ -142,7 +142,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = this.lambdaQuery()
                 .eq(User::getUsername, username)
                 .one();
-        System.out.println(passwordEncoder.encode("123"));
         if (user == null) {
             user = new User();
         }

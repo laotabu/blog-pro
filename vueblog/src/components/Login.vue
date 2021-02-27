@@ -46,6 +46,8 @@
           if (resp.status == 200) {
             //成功
             var json = resp.data;
+            // 判断是否为超级管理员
+            this.$root.isSuperAdmin = eval(json.isSuperAdmin.toLowerCase());
             if (json.status == 'success') {
               _this.$router.replace({path: '/home'});
             } else {
@@ -72,13 +74,13 @@
     width: 100%;
     background-size: cover;
     position: fixed;
-  } 
+  }
 
   html, #app, body{
     margin: 0;
     padding: 0;
   }
-  
+
   .login-container {
     border-radius: 15px;
     background-clip: padding-box;

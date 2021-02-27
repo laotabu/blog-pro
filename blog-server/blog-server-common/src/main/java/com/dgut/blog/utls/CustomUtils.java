@@ -1,8 +1,11 @@
 package com.dgut.blog.utls;
 
+import com.dgut.blog.entity.Role;
 import com.dgut.blog.entity.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -45,5 +48,18 @@ public class CustomUtils {
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
+    }
+
+    public boolean checkIsSupperAdmin(){
+        List<Role> roles = this.getCurrentUser().getRoles();
+        if (!roles.isEmpty()){
+            for (Role role : roles) {
+                if (role.getRoleName().equals("超级管理员")){
+                    return true;
+                }
+            }
+        }
+        return false;
+
     }
 }

@@ -34,16 +34,16 @@
   export default {
     mounted: function () {
       var _this = this;
-      getRequest("/isAdmin").then(resp=> {
-        if (resp.status == 200) {
-          _this.isAdmin = resp.data;
-        }
-      })
+      // getRequest("/isAdmin").then(resp=> {
+      //   if (resp.status == 200) {
+      //     _this.isAdmin = resp.data;
+      //   }
+      // })
     },
     data() {
       return {
         activeName: 'post',
-        isAdmin: false
+        isAdmin: this.$root.isSuperAdmin
       };
     },
     methods: {

@@ -10,7 +10,9 @@ import com.dgut.blog.service.CategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +54,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      */
     @Override
     public boolean deleteCategoryByIds(List<Long> ids) {
-        return this.remove(this.lambdaQuery().in(Category::getId, ids));
+        return this.removeByIds(ids);
     }
 
     /**

@@ -1,5 +1,8 @@
 package com.dgut.blog.security.hander;
 
+import com.dgut.blog.entity.User;
+import com.dgut.blog.utls.CustomUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -18,13 +21,22 @@ import java.io.PrintWriter;
  */
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+    @Autowired
+    CustomUtils customUtils;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         response.setContentType("application/json;charset=utf-8");
+
         PrintWriter out = response.getWriter();
-        out.write("{\"status\":\"success\",\"msg\":\"登录成功\"}");
+
+        String str = "{\"status\":\"success\",\"msg\":\"登录成功\",\"isSuperAdmin\":\""+
+                customUtils.checkIsSupperAdmin()+
+                "\"}";
+        out.write(str);
         out.flush();
         out.close();
     }

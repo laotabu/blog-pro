@@ -52,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/admin/category/all")
-                // 需要授权才能访问(上面)
+                // 需要授权才能访问(上面)（只能看，不能做任何修改）
                 .authenticated()
                 .antMatchers("/admin/**","/reg")
                 ///admin/**的URL都需要有超级管理员角色

@@ -68,10 +68,9 @@ public class CategoryController {
         if ("".equals(category.getCateName()) || category.getCateName() == null) {
             return new ResponseDTO("error", "请输入栏目名称!");
         }
-
-        System.out.println("要新增的栏目为： " + category);
         category.setCreateDate(LocalDateTime.now());
-         if (categoryService.addCategory(category)) {
+        System.out.println("要新增的栏目为： " + category);
+        if (categoryService.addCategory(category)) {
             return new ResponseDTO("success", "添加成功!");
         }
         return new ResponseDTO("error", "添加失败!");
