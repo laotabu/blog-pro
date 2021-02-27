@@ -12,6 +12,7 @@ import com.dgut.blog.vo.ArticleTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Autowired
     TagService tagService;
 
+
+
     @Autowired
     ArticleMapper articleMapper;
 
@@ -44,6 +47,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return
      */
     @Override
+    @Transactional
     public boolean addNewArticle(Article article) {
         //处理文章摘要
         if (article.getSummary() == null || "".equals(article.getSummary())) {
@@ -71,12 +75,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .getCurrentUser()
                 .getId()
         );
+        boolean result = this.saveOrUpdate(article);
         System.out.println("处理后文章为：" + article);
         if (dynamicTags != null && !dynamicTags.isEmpty()) {
             // 给文章重新设置标签
             addTagsToArticle(dynamicTags, article.getId());
         }
-        return  this.saveOrUpdate(article);
+        return  result;
     }
 
     /**
@@ -170,18 +175,28 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public boolean updateArticleByStateAndArticleId(List<Long> articleId,  Integer state) {
         if (state == 2) {
-            return this.removeByIds(articleId);
+            return this.removeArticleByArticleId(articleId);
         } else {
             //放入到回收站中
             return this.updateArticleStateByIds(articleId, 2);
         }
     }
 
+    /**
+     * 根据Id级联删除文章
+     * @param articleId
+     * @return
+     */
+    @Override
+    public boolean removeArticleByArticleId(List<Long> articleId) {
+        return articleMapper.removeArticleByArticleId(articleId);
+    }
+
     private void addTagsToArticle(List<String> dynamicTags, Long aid) {
 
         // 根据文章Id获取TagId列表
         List<Long> tagIds = articleTagService.getTagIdsByArticleId(aid);
-        System.out.println("文章原先的Id为" + tagIds);
+        System.out.println("文章原先的Id为" + aid);
         // 根据文章Id删除原先关联记录(articleTag)
         articleTagService.removeByArticleId(aid);
 
@@ -197,6 +212,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         });
 
         //存储tags
+        System.out.println("要存储的tag：" + tags);
         tagService.saveBatch(tags);
 
         // 输出tags列表(可删掉，测试用)

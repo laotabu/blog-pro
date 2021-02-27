@@ -23,6 +23,24 @@
     </resultMap>
 
 
+    <delete id="removeArticleByArticleId">
+        DELETE article,
+        article_tag,
+        tag
+        FROM article
+        LEFT JOIN article_tag
+        ON article.id=article_tag.article_id
+        LEFT JOIN tag
+        ON tag.id=article_tag.tag_id
+        where article.id
+        in
+        <foreach collection="articleId" item="item" open="(" close=")" separator="," index="">
+            #{item}
+        </foreach>
+
+    </delete>
+
+
     <select id="getArticleCountByStateAndKeywords" resultType="int">
         SELECT count(*)
         FROM article

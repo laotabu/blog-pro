@@ -1,15 +1,13 @@
 package com.dgut.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dgut.blog.mapper.ArticleTagMapper;
 import com.dgut.blog.service.ArticleTagService;
 import com.dgut.blog.vo.ArticleTag;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /***
@@ -30,10 +28,9 @@ public class ArticleTagServiceImpl extends ServiceImpl<ArticleTagMapper, Article
     @Override
     public boolean removeByArticleId(Long articleId) {
         System.out.println("根据文章Id删除文章与文章类别关联记录");
-        return this.remove(
-                lambdaQuery()
-                        .eq(ArticleTag::getArticleId, articleId));
-
+        Map<String, Object> maps = new HashMap<>();
+        maps.put("article_id", articleId);
+        return this.removeByMap(maps);
     }
 
     /**
@@ -50,7 +47,8 @@ public class ArticleTagServiceImpl extends ServiceImpl<ArticleTagMapper, Article
         if (!articleTags.isEmpty()){
             tagIds = articleTags.stream().map(ArticleTag::getTagId).collect(Collectors.toList());
         }
-        System.out.println("根据文章Id获取TagId: " + tagIds);
+        System.out.println("根据文章Id获取Tag: " + articleTags);
+        System.out.println("根据文章Id获取TagIds: " + tagIds);
         return tagIds;
     }
 }

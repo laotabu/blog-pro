@@ -1,7 +1,7 @@
 <template>
   <el-container v-loading="loading" class="post-article">
     <el-header class="header">
-      <el-select v-model="article.cid" placeholder="请选择文章栏目" style="width: 150px;">
+      <el-select v-model="article.categoryId" placeholder="请选择文章栏目" style="width: 150px;">
         <el-option
           v-for="item in categories"
           :key="item.id"
@@ -95,7 +95,7 @@
         this.$router.go(-1)
       },
       saveBlog(state){
-        if (!(isNotNullORBlank(this.article.title, this.article.mdContent, this.article.cid))) {
+        if (!(isNotNullORBlank(this.article.title, this.article.mdContent, this.article.categoryId))) {
           this.$message({type: 'error', message: '数据不能为空!'});
           return;
         }
@@ -106,7 +106,7 @@
           title: _this.article.title,
           mdContent: _this.article.mdContent,
           htmlContent: _this.$refs.md.d_render,
-          categoryId: _this.article.cid,
+          categoryId: _this.article.categoryId,
           state: state,
           dynamicTags: _this.article.dynamicTags
         }).then(resp=> {
@@ -180,7 +180,7 @@
           dynamicTags: [],
           title: '',
           mdContent: '',
-          cid: ''
+          categoryId: ''
         }
       }
     }

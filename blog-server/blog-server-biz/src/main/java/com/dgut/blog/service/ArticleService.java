@@ -31,7 +31,7 @@ public interface ArticleService extends IService<Article> {
 
     boolean updateArticleByStateAndArticleId(List<Long>  articleId,  Integer state);
 
-
+    boolean removeArticleByArticleId(List<Long> articleId);
 
 
     //void pvStatisticsPerDay();

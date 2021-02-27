@@ -24,4 +24,5 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     void userViewIncrement(Long articleId);
 
+    boolean removeArticleByArticleId(List<Long> articleId);
 }
