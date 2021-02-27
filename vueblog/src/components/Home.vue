@@ -1,10 +1,9 @@
 <template>
   <el-container class="home_container">
-    <el-header>
-      <div class="home_title">V部落博客管理平台</div>
+    <el-header style="font-family:华文行楷;font-size:30px">DGUT博客管理平台</div>
       <div class="home_userinfoContainer">
         <el-dropdown @command="handleCommand">
-  <span class="el-dropdown-link home_userinfo">
+  <span class="el-dropdown-link home_userinfo" style="font-size:30px">
     {{currentUserName}}<i class="el-icon-arrow-down el-icon--right home_userinfo"></i>
   </span>
           <el-dropdown-menu slot="dropdown">
@@ -46,6 +45,9 @@
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item v-text="this.$router.currentRoute.name"></el-breadcrumb-item>
           </el-breadcrumb>
+          <div class="homeWelcome" v-if="this.$router.currentRoute.path=='/home'">
+                        欢迎来到DGUT博客管理系统！
+          </div>
           <keep-alive>
             <router-view v-if="this.$route.meta.keepAlive"></router-view>
           </keep-alive>
@@ -77,11 +79,6 @@
       }
     },
     mounted: function () {
-      this.$alert('为了确保所有的小伙伴都能看到完整的数据演示，数据库只开放了查询权限和部分字段的更新权限，其他权限都不具备，完整权限的演示需要大家在自己本地部署后，换一个正常的数据库用户后即可查看，这点请大家悉知!', '友情提示', {
-        confirmButtonText: '确定',
-        callback: action => {
-        }
-      });
       var _this = this;
       getRequest("/currentUserName").then(function (msg) {
         _this.currentUserName = msg.data;
@@ -106,7 +103,7 @@
   }
 
   .el-header {
-    background-color: #20a0ff;
+    background-color: #DEB887;
     color: #333;
     text-align: center;
     display: flex;
@@ -139,4 +136,12 @@
     display: inline;
     margin-right: 20px;
   }
+
+  .homeWelcome {
+        text-align: center;
+        font-size: 30px;
+        font-family: 华文行楷;
+        color: #DEB887;
+        padding-top: 50px;
+    }
 </style>
