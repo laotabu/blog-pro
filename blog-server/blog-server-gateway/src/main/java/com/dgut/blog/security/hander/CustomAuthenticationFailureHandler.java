@@ -24,7 +24,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                                         AuthenticationException exception) throws IOException, ServletException {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        out.write("{\"status\":\"error\",\"msg\":\"登录失败\"}");
+        out.write("{\"status\":\"error\",\"msg\":\"密码错误\"}");
         out.flush();
         out.close();
     }

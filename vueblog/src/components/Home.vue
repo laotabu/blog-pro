@@ -75,6 +75,9 @@
           }, function () {
             //取消
           })
+        }else if(command == "MyHome"){
+          // this.$router.push({path:'/info',query: {username:_this.currentUserName}})
+           this.$router.push({path:'/info'});
         }
       }
     },

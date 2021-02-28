@@ -5,10 +5,18 @@ import com.dgut.blog.dto.ResponseDTO;
 import com.dgut.blog.entity.User;
 import com.dgut.blog.service.UserService;
 import com.dgut.blog.utls.CustomUtils;
+import com.dgut.blog.utls.VerificationCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -69,5 +77,17 @@ public class LoginRegController {
             //失败
             return new ResponseDTO("error", "注册失败!");
         }
+    }
+
+    @GetMapping("/verifyCode")
+    public void verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        VerificationCode code = new VerificationCode();
+        BufferedImage image = code.getImage();
+        String text = code.getText();
+        HttpSession session = request.getSession(true);
+        session.removeAttribute("verify_code");
+        session.setAttribute("verify_code", text);
+        System.out.println("生成的验证码为： " + session.getAttribute("verify_code"));
+        VerificationCode.output(image,response.getOutputStream());
     }
 }

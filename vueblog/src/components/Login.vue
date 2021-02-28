@@ -9,10 +9,18 @@
     <el-form-item prop="checkPass">
       <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
-    <el-checkbox class="login_remember" v-model="checked" label-position="left">记住密码</el-checkbox>
+
+    <el-form-item prop="code">
+      <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
+                placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px" ></el-input>
+      <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
+    </el-form-item>
+
+<!--    <el-checkbox class="login_remember" v-model="checked" label-position="left">记住密码</el-checkbox>-->
     <el-form-item style="width: 100%">
       <el-button type="primary" @click.native.prevent="submitClick" style="width: 100%;  background-color:#DEB887">登录</el-button>
     </el-form-item>
+
   </el-form>
   </body>
 </template>
@@ -22,14 +30,18 @@
   export default{
     data(){
       return {
+        // vcUrl: '/verifyCode?time='+new Date(),
+        vcUrl: '/verifyCode?time='+new Date(),
         rules: {
           account: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-          checkPass: [{required: true, message: '请输入密码', trigger: 'blur'}]
+          checkPass: [{required: true, message: '请输入密码', trigger: 'blur'}],
+          code: [{required: true, message: '请输入验证码', trigger: 'blur'}]
         },
         checked: true,
         loginForm: {
           username: 'sang',
-          password: '123'
+          password: '123',
+          code: ''
         },
         loading: false
       }
@@ -40,9 +52,11 @@
         this.loading = true;
         postRequest('/login', {
           username: this.loginForm.username,
-          password: this.loginForm.password
+          password: this.loginForm.password,
+          code: this.loginForm.code
         }).then(resp=> {
           _this.loading = false;
+          console.log(resp.data);
           if (resp.status == 200) {
             //成功
             var json = resp.data;
@@ -51,16 +65,20 @@
             if (json.status == 'success') {
               _this.$router.replace({path: '/home'});
             } else {
-              _this.$alert('登录失败!', '失败!');
+              this.updateVerifyCode();
+              _this.$alert(resp.data.msg, '登录失败!');
             }
           } else {
             //失败
-            _this.$alert('登录失败!', '失败!');
+            _this.$alert(resp.data.msg, '登录失败');
           }
         }, resp=> {
           _this.loading = false;
           _this.$alert('找不到服务器⊙﹏⊙∥!', '失败!');
         });
+      },
+      updateVerifyCode() {
+        this.vcUrl = '/verifyCode?time='+new Date();
       }
     }
   }
@@ -101,5 +119,10 @@
   .login_remember {
     margin: 0px 0px 35px 0px;
     text-align: left;
+  }
+
+  .el-form-item__content{
+    display: flex;
+    align-items: center;
   }
 </style>

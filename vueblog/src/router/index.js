@@ -8,7 +8,8 @@ import DataCharts from '@/components/DataCharts'
 import PostArticle from '@/components/PostArticle'
 import UserMana from '@/components/UserMana'
 import BlogDetail from '@/components/BlogDetail'
-
+import MyInfo from '@/components/MyInfo'
+import AddUser from '@/components/AddUser'
 Vue.use(Router)
 
 export default new Router({
@@ -61,16 +62,21 @@ export default new Router({
           }
         }
       ]
-    }, {
+    },{
       path: '/home',
       component: Home,
       name: '用户管理',
+      iconCls: 'fa fa-user-o',
       children: [
         {
           path: '/user',
-          iconCls: 'fa fa-user-o',
-          name: '用户管理',
+          name: '查看用户',
           component: UserMana
+        },
+        {
+          path: '/adduser',
+          name: '添加用户',
+          component: AddUser
         }
       ]
     }, {
@@ -96,6 +102,19 @@ export default new Router({
           iconCls: 'fa fa-bar-chart',
           name: '数据统计',
           component: DataCharts
+        }
+      ]
+    }, {
+      path: '/home',
+      component: Home,
+      name: '个人主页',
+      iconCls: 'fa fa-bar-chart',
+      children: [
+        {
+          path: '/info',
+          iconCls: 'fa fa-bar-chart',
+          name: '个人主页',
+          component: MyInfo
         }
       ]
     }

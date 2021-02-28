@@ -1,6 +1,7 @@
 package com.dgut.blog.security.config;
 
 
+import com.dgut.blog.security.filter.VerifyCodeFilter;
 import com.dgut.blog.security.hander.CustomAccessDeniedHandler;
 import com.dgut.blog.security.hander.CustomAuthenticationFailureHandler;
 import com.dgut.blog.security.hander.CustomAuthenticationSuccessHandler;
@@ -14,6 +15,10 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -36,6 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     CustomAccessDeniedHandler customAccessDeniedHandler;
 
+    @Autowired
+    VerifyCodeFilter verifyCodeFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -50,7 +57,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+
+        // 设置验证码过滤器(先于密码处理)
+        http.addFilterBefore(verifyCodeFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.cors()
+                .configurationSource(CorsConfigurationSource())
+                .and()
+                .authorizeRequests()
                 .antMatchers("/admin/category/all")
                 // 需要授权才能访问(上面)（只能看，不能做任何修改）
                 .authenticated()
@@ -82,9 +96,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/blogimg/**","/index.html","/static/**");
+        web.ignoring().antMatchers("/blogimg/**","/index.html","/static/**","/verifyCode");
     }
 
+    //配置跨域访问资源
+    private CorsConfigurationSource CorsConfigurationSource() {
+        CorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*");	//同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
+        corsConfiguration.addAllowedHeader("*");//header，允许哪些header，本案中使用的是token，此处可将*替换为token；
+        corsConfiguration.addAllowedMethod("*");	//允许的请求方法，PSOT、GET等
+        ((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**",corsConfiguration); //配置允许跨域访问的url
+        return source;
+    }
 
 
 

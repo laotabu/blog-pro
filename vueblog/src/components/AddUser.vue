@@ -28,7 +28,7 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 import axios from "axios";
 export default {
@@ -46,45 +46,51 @@ export default {
     // console.log($);
     // console.log("1111");
   },
+
+
   methods: {
     doRegister() {
-      if (!this.user.username) {
-        this.$message.error("请输入用户名！");
-        return;
-      } else if (!this.user.email) {
-        this.$message.error("请输入邮箱！");
-        return;
-      } else if (this.user.email != null) {
-        var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-        if (!reg.test(this.user.email)) {
-          this.$message.error("请输入有效的邮箱！");
-        } else if (!this.user.password) {
-          this.$message.error("请输入密码！");
+      if (this.$root.isSuperAdmin) {
+        if (!this.user.username) {
+          this.$message.error("请输入用户名！");
           return;
-        } else {
-          // this.$router.push({ path: "/" }); //无需向后台提交数据，方便前台调试
-          axios
-            .post("/register/", {
-              name: this.user.username,
-              email: this.user.email,
-              password: this.user.password
-            })
-            .then(res => {
-              // console.log("输出response.data", res.data);
-              // console.log("输出response.data.status", res.data.status);
-              if (res.data.status === 200) {
-                this.$router.push({ path: "/" });
-              } else {
-                alert("您输入的用户名已存在！");
-              }
-            });
+        } else if (!this.user.email) {
+          this.$message.error("请输入邮箱！");
+          return;
+        } else if (this.user.email != null) {
+          var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+          if (!reg.test(this.user.email)) {
+            this.$message.error("请输入有效的邮箱！");
+          } else if (!this.user.password) {
+            this.$message.error("请输入密码！");
+            return;
+          } else {
+            // this.$router.push({ path: "/" }); //无需向后台提交数据，方便前台调试
+            axios
+              .post("/register/", {
+                name: this.user.username,
+                email: this.user.email,
+                password: this.user.password
+              })
+              .then(res => {
+                // console.log("输出response.data", res.data);
+                // console.log("输出response.data.status", res.data.status);
+                if (res.data.status === 200) {
+                  this.$router.push({path: "/"});
+                } else {
+                  alert("您输入的用户名已存在！");
+                }
+              });
+          }
         }
+      }else {
+        this.$message({type: 'error', message: '权限不足，请联系管理员!'});
       }
     }
   }
 };
 </script>
- 
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .login {
@@ -104,7 +110,7 @@ export default {
   line-height: 20px;
   */
 }
- 
+
 h3 {
   color: #0babeab8;
   font-size: 24px;
@@ -113,7 +119,7 @@ hr {
   background-color: #444;
   margin: 20px auto;
 }
- 
+
 .el-button {
   width: 80%;
   margin-left: -50px;
