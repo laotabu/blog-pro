@@ -1,101 +1,195 @@
 <template>
-  <div>
-    <el-row :gutter="20" style="margin-top:10px;">
-      <el-col :span="8">
-        <div class="grid-content bg-purple">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>个人中心</span>
+
+    <el-card class="box-card">
+      <div slot="header" style="text-align: center;">
+        <span>个人中心</span>
+
+        <el-popover
+          placement=""
+          width="400"
+          trigger="click" >
+          <div slot="header" class="clearfix">
+            <span>基本资料</span>
+          </div>
+          <div>
+            <el-form label-width="80px"  size="small" label-position="right" :model="UpdateUserInfoPARM">
+              <el-form-item label="用户别名">
+                <el-input  placeholder="请输入新别名"  v-model="UpdateUserInfoPARM.inputNickName"></el-input>
+              </el-form-item>
+              <el-form-item label="用户邮箱">
+                <el-input  placeholder="请输入新邮箱"  v-model="UpdateUserInfoPARM.inputEmail"></el-input>
+              </el-form-item>
+              <el-form-item label="原密码">
+                <el-input placeholder="请输入原密码" v-model="UpdateUserInfoPARM.newPassword" show-password></el-input>
+              </el-form-item>
+              <el-form-item label="新密码">
+                <el-input placeholder="请输入新密码" v-model="UpdateUserInfoPARM.oldPassword" show-password></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button size="mini" type="primary"  @click="onSubmit" round>提交</el-button>
+              <el-button type="warning" size="mini" @click="onReset" round>撤销</el-button>
             </div>
-            <div class="name-role">
-              <span class="sender">Admin - {{dataForm.nickName}}</span>
-            </div>
-            <div class="registe-info">
-          <span class="registe-info">
-            注册时间：
+          </div>
+          <el-button style="float: right; padding: 3px 0;" type="text" icon="el-icon-setting" size="medium" slot="reference" >
+          </el-button>
+        </el-popover>
+
+
+      </div>
+      <el-row :gutter="20">
+        <el-col :span="17">
+          <div class="personal-relation">
+            <i class="fa fa-address-card-o" aria-hidden="true"></i>
+            <div class="relation-item">账号名称: </div>
+            <div style="float: right; padding-right:20px;"> {{user.username}}</div>
+          </div>
+          <div class="personal-relation">
+            <i class="fa fa-address-card" aria-hidden="true"></i>
+            <div class="relation-item">用户别名: </div>
+            <div style="float: right; padding-right:20px;"> {{user.nickname}}</div>
+          </div>
+          <div class="personal-relation">
             <li class="fa fa-clock-o"></li>
-             2020/4/10 9:40:33
-          </span>
+            <div class="relation-item">注册时间：</div>
+            <div style="float: right; padding-right:20px;">{{user.registerDate | formatDateTime}}</div>
+          </div>
+          <div class="personal-relation">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+            <div class="relation-item">用户邮箱: </div>
+            <div style="float: right; padding-right:20px;"> {{user.email}}</div>
+          </div>
+          <div class="personal-relation" >
+            <i class="fa fa-users" aria-hidden="true"></i>
+            <div class="relation-item">用户角色:</div>
+            <div style="float: right; padding-right:20px;">
+              <el-tag
+                v-for="role in user.roles"
+                :key="role.id"
+                size="mini"
+                style="margin-right: 8px"
+                type="success">
+                {{role.roleName}}
+              </el-tag>
             </div>
-            <div class="demo-type">
-                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-            </div>
-            <el-divider></el-divider>
-            <div class="personal-relation">
-              <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{dataForm.phone}}</div></div>
-            </div>
-            <div class="personal-relation">
-              <div class="relation-item">所属企业:  <div style="float: right; padding-right:20px;">杭州诚聚</div></div>
-            </div>
-            <div class="personal-relation">
-              <div class="relation-item">首页链接:  <div style="float: right; padding-right:20px;">{{dataForm.homeUrl}}</div></div>
-            </div>
-
-            <el-popover
-              placement="top-start"
-              width="400"
-              trigger="click">
-                <div slot="header" class="clearfix">
-                  <span>基本资料</span>
-                </div>
-                <div>
-                  <el-form label-width="80px" v-model="dataFrom" size="small" label-position="right">
-                    <el-form-item label="用户昵称" prop="nickName">
-                      <el-input  auto-complete="off" v-model="dataForm.nickName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="手机号" prop="phone">
-                      <el-input auto-complete="off" v-model="dataForm.phone"></el-input>
-                    </el-form-item>
-                    <el-form-item label="首页链接" prop="homeUrl">
-                      <el-input  maxlength="18" v-model="dataForm.homeUrl"></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <div slot="footer" class="dialog-footer">
-                    <el-button size="mini" type="primary">提交</el-button>
-                    <el-button size="mini" type="warning" >关闭</el-button>
-                  </div>
-                </div>
-              <el-button slot="reference">click 激活</el-button>
-            </el-popover>
+          </div>
+        </el-col>
+        <el-col :span="6" >
+<!--          <div class="demo-type" style="margin-top: 45%">-->
+<!--            <el-avatar :src='user.icon' :size="125" ></el-avatar>-->
+<!--          </div>-->
+          <el-upload
+            class="avatar-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="user.icon" :src="user.icon" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <span>点我修改头像</span>
+          </el-upload>
+        </el-col>
+      </el-row>
 
 
-          </el-card>
-        </div>
-      </el-col>
+    </el-card>
 
-
-    </el-row>
-  </div>
 </template>
 
 <script>
+  import {getRequest, postRequest} from "../utils/api";
+
   export default {
     data(){
       return{
-        dataForm:{
-          nickName: '超级管理员',
-          phone: '173567777777',
-          homeUrl: 'http://www.baidu.com'
+        user: {
+          username:"xxx",
+          nickName: 'ssss',
+          email: '9329@qq.com',
+          registerDate: '2017-12-21T13:30:29',
+          icon: 'http://m.imeitou.com/uploads/allimg/2021013115/dyjcgmnhbng.jpg',
+          roles: [],
         },
-      //   gridData: [{
-      //     date: '2016-05-02',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1518 弄'
-      //   }, {
-      //     date: '2016-05-04',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1518 弄'
-      //   }, {
-      //     date: '2016-05-01',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1518 弄'
-      //   }, {
-      //     date: '2016-05-03',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1518 弄'
-      //   }]
+        UpdateUserInfoPARM: {
+          inputNickName: "",
+          inputEmail: "",
+          oldPassword: "",
+          newPassword: ""
+        }
       }
+    },
+    mounted: function () {
+      this.loaderUser();
+    },
+    methods: {
+      onSubmit(){
+        var data = this.UpdateUserInfoPARM;
+        // 检查邮箱是否符合格式
+        if(data.inputEmail != ""){
+          var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+          if (!reg.test(data.inputEmail)) {
+            this.$message.error("请输入有效的邮箱！");
+          }
+        }
+        // 检查密码是否输入
+        if (data.oldPassword == ""){
+          this.$message({type: 'error', message: '旧密码不能为空'});
+        }else{
+          console.log(data);
+          postRequest("updateUserInfo",data).then(resp=>{
+            if (resp.status == 200) {
+              console.log("更新成功");
+              this.loaderUser();
+            }else {
+              this.$message({type: 'error', message: '更新失败，请检查网络是否正常'});
+            }
+          })
+        }
+      },
+      onReset(){
+        this.UpdateUserInfoPARM.oldPassword = "";
+        this.UpdateUserInfoPARM.newPassword = "";
+        this.UpdateUserInfoPARM.inputEmail = "";
+        this.UpdateUserInfoPARM.inputNickName = "";
+      },
+      loaderUser(){
+        getRequest("userInfo").then(resp=> {
+          if (resp.status == 200) {
+            this.user = resp.data;
+            console.log(resp.data);
+          } else {
+            this.$message({type: 'error', message: '数据加载失败!'});
+          }
+        }, resp=> {
+          loading = false;
+          if (resp.response.status == 403) {
+            this.$message({type: 'error', message: resp.response.data});
+          } else {
+            this.$message({type: 'error', message: '数据加载失败!'});
+          }
+        }).catch(resp=> {
+          //压根没见到服务器
+          this.$message({type: 'error', message: '数据加载失败!'});
+        })
+      },
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      }
+
     }
+
   }
 </script>
 
@@ -110,17 +204,11 @@
     margin-bottom: 18px;
   }
 
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-  .clearfix:after {
-    clear: both
-  }
+
 
   .box-card {
     width: 100%;
+    margin-top: 15px;
   }
   //文本样式区
   .name-role {
@@ -137,9 +225,11 @@
   }
   .personal-relation {
     font-size: 16px;
-    padding: 0px 5px 15px;
+
     margin-right: 1px;
-    width: 100%
+    width: 100%;
+    display: flex;
+    align-items: center;
   }
 
   .relation-item {
@@ -147,8 +237,7 @@
 
   }
   .dialog-footer{
-    padding-top:10px ;
-    padding-left: 10%;
+    padding-left: 15%;
   }
   //布局样式区
   .el-row {
@@ -181,4 +270,60 @@
   .box-card {
     width: 550px;
   }
+
+
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    margin-top: 33%;
+    font-size: 28px;
+    color: #8c939d;
+    width: 125px;
+    height: 125px;
+    line-height: 125px;
+    text-align: center;
+  }
+  .avatar {
+    margin-top: 33%;
+    width: 125px;
+    height: 125px;
+    display: block;
+    border-radius:50%;
+  }
+
 </style>

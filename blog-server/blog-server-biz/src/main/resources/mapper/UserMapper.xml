@@ -59,5 +59,20 @@
     </update>
 
 
+    <update id="updateUserPrimaryInfoByUserId">
+        update user
+        set
+        <if test="newEmail!=null">
+            email = #{newEmail}
+        </if>
+        <if test="newPassword!=null">
+            and password = #{newPassword}
+        </if>
+        <if test="newNickname!=null">
+            and nickname = #{newNickname}
+        </if>
+        where id = #{id}
+    </update>
+
 
 </mapper>

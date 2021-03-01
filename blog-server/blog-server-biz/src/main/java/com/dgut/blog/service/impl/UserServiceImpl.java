@@ -130,6 +130,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userRoleService.addRolesByUserId(rids, id);
     }
 
+    /***
+     * 根据用户id更新用户信息（可选择性更新，也可更新密码）
+     * @param id 用户Id
+     * @param newEmail 用户新邮箱
+     * @param newPassword 用户新密码
+     * @param newNickname 用户新别称
+     * @return
+     */
+    @Override
+    public boolean updateUserPrimaryInfoByUserId(Long id, String newEmail, String newPassword, String newNickname) {
+        return userMapper.updateUserPrimaryInfoByUserId(id, newEmail, newPassword, newNickname);
+    }
+
 
     /***
      * 根据用户名获取用户

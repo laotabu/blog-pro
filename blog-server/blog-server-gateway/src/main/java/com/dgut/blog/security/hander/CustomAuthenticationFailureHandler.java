@@ -1,5 +1,10 @@
 package com.dgut.blog.security.hander;
 
+import com.alibaba.fastjson.JSON;
+import com.dgut.blog.dto.ResponseDTO;
+import com.dgut.blog.entity.User;
+import com.dgut.blog.utls.CustomUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -18,13 +23,17 @@ import java.io.PrintWriter;
  */
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
+    @Autowired
+    CustomUtils customUtils;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        out.write("{\"status\":\"error\",\"msg\":\"密码错误\"}");
+        out.write(JSON.toJSONString(new ResponseDTO("error","密码错误或账户被锁定，请联系管理员")));
         out.flush();
         out.close();
     }

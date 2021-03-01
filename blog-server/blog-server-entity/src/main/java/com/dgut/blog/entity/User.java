@@ -133,4 +133,11 @@ public class User implements UserDetails {
         return userName;
     }
 
+    /**
+     * 自定义返回user对象状态
+     * @return
+     */
+    public boolean customcCheckUserIsEnable(){
+        return this.enabled;
+    }
 }
