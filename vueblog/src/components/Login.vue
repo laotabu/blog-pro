@@ -60,9 +60,9 @@
           if (resp.status == 200) {
             //成功
             var json = resp.data;
-            // 判断是否为超级管理员
-            this.$root.isSuperAdmin = eval(json.isSuperAdmin.toLowerCase());
             if (json.status == 'success') {
+              // 判断是否为超级管理员
+              this.$root.isSuperAdmin = eval(json.isSuperAdmin.toLowerCase());
               _this.$router.replace({path: '/home'});
             } else {
               this.updateVerifyCode();

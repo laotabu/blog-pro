@@ -23,3 +23,5 @@
 hs_err_pid*
 
 vueblog/node_modules
+
+blog-server/blog-server-gateway/src/main/resources/application.yaml

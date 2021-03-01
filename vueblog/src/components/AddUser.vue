@@ -5,123 +5,124 @@
         <el-form ref="loginForm" :model="user" status-icon label-width="80px">
           <h3>添加用户</h3>
           <hr>
-          <el-form-item prop="username" label="用户名">
-            <el-input v-model="user.username" placeholder="请输入用户名"></el-input>
+          <el-form-item label="用户名称" >
+            <el-input v-model="user.name" placeholder="请输入名称"></el-input>
           </el-form-item>
-          <el-form-item prop="email" label="邮箱">
+          <el-form-item label="用户密码">
+            <el-input v-model="user.password" placeholder="请输入密码" show-password></el-input>
+          </el-form-item>
+          <el-form-item label="用户邮箱" >
             <el-input v-model="user.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
-          <el-form-item prop="password" label="密码">
-            <el-input v-model="user.password" placeholder="请输入密码"></el-input>
+          <el-form-item label="用户姓名" >
+            <el-input v-model="user.nickname" placeholder="请输入姓名"></el-input>
           </el-form-item>
-          <el-form-item prop="enable" label="身份">
-            <el-input v-model="user.enable" placeholder="请输入身份"></el-input>
-          </el-form-item>
-          <el-form-item prop="nickname" label="真实姓名">
-            <el-input v-model="user.nickname"  placeholder="请输入真实姓名"></el-input>
+          <el-form-item label="用户角色" >
+            <el-checkbox-group v-model="user.type">
+              <el-checkbox label="超级管理员" name="type"></el-checkbox>
+              <el-checkbox label="普通用户" name="type"></el-checkbox>
+            </el-checkbox-group>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon @click="doRegister()">添加用户</el-button>
+            <el-button type="primary" @click="onSubmit">添加用户</el-button>
           </el-form-item>
         </el-form>
       </el-row>
     </div>
   </div>
 </template>
-
+ 
 <script>
-import axios from "axios";
-export default {
-  name: "login",
-  data() {
-    return {
-      user: {
-        username: "",
-        email: "",
-        password: ""
-      },
-    };
-  },
-  created() {
-    // console.log($);
-    // console.log("1111");
-  },
-
-
-  methods: {
-    doRegister() {
-      if (this.$root.isSuperAdmin) {
-        if (!this.user.username) {
-          this.$message.error("请输入用户名！");
-          return;
-        } else if (!this.user.email) {
-          this.$message.error("请输入邮箱！");
-          return;
-        } else if (this.user.email != null) {
-          var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-          if (!reg.test(this.user.email)) {
-            this.$message.error("请输入有效的邮箱！");
-          } else if (!this.user.password) {
-            this.$message.error("请输入密码！");
-            return;
-          } else {
-            // this.$router.push({ path: "/" }); //无需向后台提交数据，方便前台调试
-            axios
-              .post("/register/", {
-                name: this.user.username,
-                email: this.user.email,
-                password: this.user.password
-              })
-              .then(res => {
-                // console.log("输出response.data", res.data);
-                // console.log("输出response.data.status", res.data.status);
-                if (res.data.status === 200) {
-                  this.$router.push({path: "/"});
-                } else {
-                  alert("您输入的用户名已存在！");
+  import {isNotNullORBlank} from '../utils/utils'
+  import {postRequest} from '../utils/api'
+    export default {
+        data() {
+            return {
+                user: {
+                    name: '',
+                    password: '',
+                    email: '',
+                    nickname: '',
+                    type: [],
                 }
-              });
-          }
+            }
+        },
+        methods: {
+        onSubmit() {
+        //   console.log(this.user.type);
+        if (!(isNotNullORBlank(this.user.name, this.user.password, this.user.email, this.user.nickname, this.user.type))) {
+        this.$message({type: 'error', message: '数据不能为空!'});
+        return;
         }
-      }else {
-        this.$message({type: 'error', message: '权限不足，请联系管理员!'});
-      }
+        var _this = this;
+        _this.loading = true;
+        postRequest("admin/user/register", {
+        user: _this.user.name,
+        password: _this.user.password,
+        email: _this.user.email,
+        nickname: _this.user.nickname,
+        type: _this.user.type
+        }).then(resp=> {
+        _this.loading = false;
+        if (resp.status == 200 && resp.data.status == 'success') {
+        console.log(data);
+        _this.$message({type: 'success', message: state == 0 ? '添加成功!' : '发布成功!'});
+        // if (_this.from != undefined) {
+        }})
+        }
+        }
     }
-  }
-};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.login {
-/*
-  width: 100%;
-  height: 740px;
-  overflow: hidden;
-  */
-}
-.login-wrap {
-    /*
-  width: 400px;
-  height: 300px;
-  margin: 215px auto;
-  overflow: hidden;
-  padding-top: 10px;
-  line-height: 20px;
-  */
-}
+<style>
+    .home_container {
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+    }
 
-h3 {
-  color: #0babeab8;
-  font-size: 24px;
-}
-hr {
-  background-color: #444;
-  margin: 20px auto;
-}
+    .el-header {
+        background-color: #DEB887;
+        color: #333;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-.el-button {
-  width: 80%;
-  margin-left: -50px;
-}
+    .el-aside {
+        background-color: #ECECEC;
+    }
+
+    .el-main {
+        background-color: #fff;
+        color: #000;
+        text-align: center;
+    }
+
+    .home_title {
+        color: #fff;
+        font-size: 22px;
+        display: inline;
+    }
+
+    .home_userinfo {
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .home_userinfoContainer {
+        display: inline;
+        margin-right: 20px;
+    }
+
+    .homeWelcome {
+        text-align: center;
+        font-size: 30px;
+        font-family: 华文行楷;
+        color: #DEB887;
+        padding-top: 50px;
+    }
 </style>

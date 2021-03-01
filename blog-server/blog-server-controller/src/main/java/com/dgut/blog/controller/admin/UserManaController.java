@@ -6,10 +6,7 @@ import com.dgut.blog.entity.User;
 import com.dgut.blog.service.RoleService;
 import com.dgut.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -102,5 +99,19 @@ public class UserManaController {
         } else {
             return new ResponseDTO("error", "更新失败!");
         }
+    }
+
+
+    /**
+     * 更新用户角色
+     * @param user
+     * @return
+     */
+    @PostMapping(value = "/user/register")
+    public ResponseDTO regesterUser(User user) {
+        System.out.println("要增加的用户为： " + user);
+
+        return new ResponseDTO("error", "更新失败!");
+
     }
 }

@@ -1,248 +1,184 @@
 <template>
+  <div>
+    <el-row :gutter="20" style="margin-top:10px;">
+      <el-col :span="8">
+        <div class="grid-content bg-purple">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>个人中心</span>
+            </div>
+            <div class="name-role">
+              <span class="sender">Admin - {{dataForm.nickName}}</span>
+            </div>
+            <div class="registe-info">
+          <span class="registe-info">
+            注册时间：
+            <li class="fa fa-clock-o"></li>
+             2020/4/10 9:40:33
+          </span>
+            </div>
+            <div class="demo-type">
+                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+            </div>
+            <el-divider></el-divider>
+            <div class="personal-relation">
+              <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{dataForm.phone}}</div></div>
+            </div>
+            <div class="personal-relation">
+              <div class="relation-item">所属企业:  <div style="float: right; padding-right:20px;">杭州诚聚</div></div>
+            </div>
+            <div class="personal-relation">
+              <div class="relation-item">首页链接:  <div style="float: right; padding-right:20px;">{{dataForm.homeUrl}}</div></div>
+            </div>
 
-  <div v-loading="loading">
-    <div style="margin-top: 10px;display: flex;justify-content: center">
-      <el-input
-        placeholder="默认展示部分用户，可以通过用户名搜索用户..."
-        prefix-icon="el-icon-search"
-        v-model="keywords" style="width: 400px" size="small">
-      </el-input>
-      <el-button type="primary" icon="el-icon-search" size="small" style="margin-left: 3px" @click="searchClick">搜索
-      </el-button>
-    </div>
-    <div style="display: flex;justify-content: space-around;flex-wrap: wrap">
-      <el-card style="width:330px;margin-top: 10px;" v-for="(user,index) in users" :key="index"
-               v-loading="cardloading[index]">
-        <div slot="header" style="text-align: left">
-          <span>{{user.nickname}}</span>
-          <el-button style="float: right; padding: 3px 0;color: #ff0509" type="text" icon="el-icon-delete"
-                     @click="deleteUser(user.id)">删除
-          </el-button>
-        </div>
-        <div>
-          <div><img :src="user.icon" :alt="user.nickname" style="width: 70px;height: 70px"></div>
-          <div style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px">
-            <span>用户名:</span><span>{{user.username}}</span>
-          </div>
-          <div style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px">
-            <span>电子邮箱:</span><span>{{user.email}}</span>
-          </div>
-          <div style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px">
-            <span>注册时间:</span><span>{{user.registerDate | formatDateTime}}</span>
-          </div>
-          <div
-            style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px;display: flex;align-items: center">
-            <span>用户状态:</span>
-            <el-switch
-              v-model="user.enabled"
-              active-text="启用"
-              active-color="#13ce66"
-              @change="enabledChange(user.enabled,user.id,index)"
-              inactive-text="禁用" style="font-size: 12px">
-            </el-switch>
-          </div>
-          <div style="text-align: left;color:#20a0ff;font-size: 12px;margin-top: 13px">
-            <span>用户角色:</span>
-            <el-tag
-              v-for="role in user.roles"
-              :key="role.id"
-              size="mini"
-              style="margin-right: 8px"
-              type="success">
-              {{role.roleName}}
-            </el-tag>
             <el-popover
-              placement="right"
-              title="角色列表"
-              width="200"
-              :key="index+''+user.id"
-              @hide="saveRoles(user.id,index)"
-              trigger="click" v-loading="eploading[index]">
-              <el-select v-model="roles" :key="user.id" multiple placeholder="请选择" size="mini">
-                <el-option
-                  v-for="(item,index) in allRoles"
-                  :key="user.id+'-'+item.id"
-                  :label="item.roleName"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-              <el-button type="text" icon="el-icon-more" style="padding-top: 0px" slot="reference"
-                         @click="showRole(user.roles,user.id,index)"></el-button>
+              placement="top-start"
+              width="400"
+              trigger="click">
+                <div slot="header" class="clearfix">
+                  <span>基本资料</span>
+                </div>
+                <div>
+                  <el-form label-width="80px" v-model="dataFrom" size="small" label-position="right">
+                    <el-form-item label="用户昵称" prop="nickName">
+                      <el-input  auto-complete="off" v-model="dataForm.nickName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号" prop="phone">
+                      <el-input auto-complete="off" v-model="dataForm.phone"></el-input>
+                    </el-form-item>
+                    <el-form-item label="首页链接" prop="homeUrl">
+                      <el-input  maxlength="18" v-model="dataForm.homeUrl"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <div slot="footer" class="dialog-footer">
+                    <el-button size="mini" type="primary">提交</el-button>
+                    <el-button size="mini" type="warning" >关闭</el-button>
+                  </div>
+                </div>
+              <el-button slot="reference">click 激活</el-button>
             </el-popover>
-          </div>
+
+
+          </el-card>
         </div>
-      </el-card>
-    </div>
+      </el-col>
+
+
+    </el-row>
   </div>
 </template>
+
 <script>
-  import {getRequest} from '../utils/api'
-  import {putRequest} from '../utils/api'
-  import {deleteRequest} from '../utils/api'
-  export default{
-    mounted: function () {
-      this.loading = true;
-      this.loadUserList();
-      this.cardloading = Array.apply(null, Array(20)).map(function (item, i) {
-        return false;
-      });
-      this.eploading = Array.apply(null, Array(20)).map(function (item, i) {
-        return false;
-      });
-    },
-    methods: {
-      saveRoles(id, index){
-        var selRoles = this.roles;
-        if (this.cpRoles.length == selRoles.length) {
-          for (var i = 0; i < this.cpRoles.length; i++) {
-            for (var j = 0; j < selRoles.length; j++) {
-              if (this.cpRoles[i].id == selRoles[j]) {
-                selRoles.splice(j, 1);
-                break;
-              }
-            }
-          }
-          if (selRoles.length == 0) {
-            return;
-          }
-        }
-        var _this = this;
-        _this.cardloading.splice(index, 1, true)
-        putRequest("/admin/user/role", {rids: this.roles, id: id}).then(resp=> {
-          if (resp.status == 200 && resp.data.status == 'success') {
-            _this.$message({type: resp.data.status, message: resp.data.msg});
-            _this.loadOneUserById(id, index);
-          } else {
-            _this.cardloading.splice(index, 1, false)
-            _this.$message({type: 'error', message: '更新失败!'});
-          }
-        }, resp=> {
-          _this.cardloading.splice(index, 1, false)
-          if (resp.response.status == 403) {
-            var data = resp.response.data;
-            _this.$message({type: 'error', message: data});
-          }
-        });
-      },
-      showRole(aRoles, id, index){
-        this.cpRoles = aRoles;
-        this.roles = [];
-        this.loadRoles(index);
-        for (var i = 0; i < aRoles.length; i++) {
-          this.roles.push(aRoles[i].id);
-        }
-      },
-      deleteUser(id){
-        var _this = this;
-        this.$confirm('删除该用户, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          _this.loading = true;
-          deleteRequest("/admin/user/" + id).then(resp=> {
-            if (resp.status == 200 && resp.data.status == 'success') {
-              _this.$message({type: 'success', message: '删除成功!'})
-              _this.loadUserList();
-              return;
-            }
-            _this.loading = false;
-            _this.$message({type: 'error', message: '删除失败!'})
-          }, resp=> {
-            _this.loading = false;
-            _this.$message({type: 'error', message: '删除失败!'})
-          });
-        }).catch(() => {
-          _this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-      },
-      enabledChange(enabled, id, index){
-        var _this = this;
-        _this.cardloading.splice(index, 1, true)
-        putRequest("/admin/user/enabled", {enabled: enabled, uid: id}).then(resp=> {
-          if (resp.status != 200) {
-            _this.$message({type: 'error', message: '更新失败!'})
-            _this.loadOneUserById(id, index);
-            return;
-          }
-          _this.cardloading.splice(index, 1, false)
-          _this.$message({type: 'success', message: '更新成功!'})
-        }, resp=> {
-          _this.$message({type: 'error', message: '更新失败!'})
-          _this.loadOneUserById(id, index);
-        });
-      },
-      loadRoles(index){
-        var _this = this;
-        _this.eploading.splice(index, 1, true)
-        getRequest("/admin/roles").then(resp=> {
-          _this.eploading.splice(index, 1, false)
-          if (resp.status == 200) {
-            _this.allRoles = resp.data;
-          } else {
-            _this.$message({type: 'error', message: '数据加载失败!'});
-          }
-        }, resp=> {
-          _this.eploading.splice(index, 1, false)
-          if (resp.response.status == 403) {
-            var data = resp.response.data;
-            _this.$message({type: 'error', message: data});
-          }
-        });
-      },
-      loadOneUserById(id, index){
-        var _this = this;
-        getRequest("/admin/user/" + id).then(resp=> {
-          _this.cardloading.splice(index, 1, false)
-          if (resp.status == 200) {
-            _this.users.splice(index, 1, resp.data);
-          } else {
-            _this.$message({type: 'error', message: '数据加载失败!'});
-          }
-        }, resp=> {
-          _this.cardloading.splice(index, 1, false)
-          if (resp.response.status == 403) {
-            var data = resp.response.data;
-            _this.$message({type: 'error', message: data});
-          }
-        });
-      },
-      loadUserList(){
-        var _this = this;
-        getRequest("/admin/user?nickname="+this.keywords).then(resp=> {
-          _this.loading = false;
-          if (resp.status == 200) {
-            _this.users = resp.data;
-          } else {
-            _this.$message({type: 'error', message: '数据加载失败!'});
-          }
-        }, resp=> {
-          _this.loading = false;
-          if (resp.response.status == 403) {
-            var data = resp.response.data;
-            _this.$message({type: 'error', message: data});
-          }
-        });
-      },
-      searchClick(){
-        this.loading = true;
-        this.loadUserList();
-      }
-    },
+  export default {
     data(){
-      return {
-        loading: false,
-        eploading: [],
-        cardloading: [],
-        keywords: '',
-        users: [],
-        allRoles: [],
-        roles: [],
-        cpRoles: []
+      return{
+        dataForm:{
+          nickName: '超级管理员',
+          phone: '173567777777',
+          homeUrl: 'http://www.baidu.com'
+        },
+      //   gridData: [{
+      //     date: '2016-05-02',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1518 弄'
+      //   }, {
+      //     date: '2016-05-04',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1518 弄'
+      //   }, {
+      //     date: '2016-05-01',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1518 弄'
+      //   }, {
+      //     date: '2016-05-03',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1518 弄'
+      //   }]
       }
     }
   }
 </script>
+
+<style lang="scss" scoped>
+
+  //卡片样式
+  .text {
+    font-size: 14px;
+  }
+
+  .item {
+    margin-bottom: 18px;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
+
+  .box-card {
+    width: 100%;
+  }
+  //文本样式区
+  .name-role {
+    font-size: 16px;
+    padding: 5px;
+    text-align:center;
+  }
+  .sender{
+    text-align:center;
+  }
+  .registe-info{
+    text-align: center;
+    padding-top:10px;
+  }
+  .personal-relation {
+    font-size: 16px;
+    padding: 0px 5px 15px;
+    margin-right: 1px;
+    width: 100%
+  }
+
+  .relation-item {
+    padding: 12px;
+
+  }
+  .dialog-footer{
+    padding-top:10px ;
+    padding-left: 10%;
+  }
+  //布局样式区
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+
+  .box-card {
+    width: 550px;
+  }
+</style>
