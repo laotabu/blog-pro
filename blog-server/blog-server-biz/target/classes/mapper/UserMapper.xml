@@ -61,16 +61,18 @@
 
     <update id="updateUserPrimaryInfoByUserId">
         update user
-        set
-        <if test="newEmail!=null">
-            email = #{newEmail}
-        </if>
-        <if test="newPassword!=null">
-            and password = #{newPassword}
-        </if>
-        <if test="newNickname!=null">
-            and nickname = #{newNickname}
-        </if>
+        <!--删除逗号-->
+        <trim prefix="set" suffixOverrides=",">
+            <if test="newEmail!=''">
+                email = #{newEmail},
+            </if>
+            <if test="newPassword!=''">
+                password = #{newPassword},
+            </if>
+            <if test="newNickname!=''">
+                nickname = #{newNickname}
+            </if>
+        </trim>
         where id = #{id}
     </update>
 

@@ -20,10 +20,10 @@
                 <el-input  placeholder="请输入新邮箱"  v-model="UpdateUserInfoPARM.inputEmail"></el-input>
               </el-form-item>
               <el-form-item label="原密码">
-                <el-input placeholder="请输入原密码" v-model="UpdateUserInfoPARM.newPassword" show-password></el-input>
+                <el-input placeholder="请输入原密码" v-model="UpdateUserInfoPARM.oldPassword" show-password></el-input>
               </el-form-item>
               <el-form-item label="新密码">
-                <el-input placeholder="请输入新密码" v-model="UpdateUserInfoPARM.oldPassword" show-password></el-input>
+                <el-input placeholder="请输入新密码" v-model="UpdateUserInfoPARM.newPassword" show-password></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -80,10 +80,12 @@
 <!--          </div>-->
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
             :show-file-list="false"
+            action="userIconUpload"
             :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
+            :before-upload="beforeAvatarUpload"
+            :http-request="userIconUpload"
+            >
             <img v-if="user.icon" :src="user.icon" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             <span>点我修改头像</span>
@@ -97,7 +99,8 @@
 </template>
 
 <script>
-  import {getRequest, postRequest} from "../utils/api";
+  import {getRequest, postRequest, uploadFileRequest} from "../utils/api";
+  import {isNotNullORBlank} from "../utils/utils";
 
   export default {
     data(){
@@ -132,19 +135,38 @@
           }
         }
         // 检查密码是否输入
-        if (data.oldPassword == ""){
+        if (data.oldPassword == "") {
           this.$message({type: 'error', message: '旧密码不能为空'});
-        }else{
-          console.log(data);
-          postRequest("updateUserInfo",data).then(resp=>{
-            if (resp.status == 200) {
-              console.log("更新成功");
-              this.loaderUser();
-            }else {
-              this.$message({type: 'error', message: '更新失败，请检查网络是否正常'});
-            }
-          })
+        } else {
+          // 判断所有数据是否为空
+          if (data.inputNickName == ""
+            && data.inputEmail == ""
+            && data.newPassword == "") {
+            this.$message({type: 'error', message: '您没有更新任何一项数据'});
+          } else {
+            console.log(data);
+            postRequest("updateUserInfo", data).then(resp => {
+              console.log(resp);
+              if (resp.data.status == 'success') {
+                // 更新密码
+                this.$message({type: resp.data.status, message: resp.data.msg});
+                if (data.newPassword != "") {
+                  getRequest("/logout");
+                  this.$router.replace({path: '/'});
+                } else {
+                  // 如果有更新用户就更新
+                  if (data.inputNickName != "") {
+                    this.$root.currentUserNickname = data.inputNickName;
+                  }
+                  this.loaderUser();
+                }
+              } else {
+                this.$message({type: resp.data.status, message: resp.data.msg});;
+              }
+            })
+          }
         }
+
       },
       onReset(){
         this.UpdateUserInfoPARM.oldPassword = "";
@@ -156,7 +178,6 @@
         getRequest("userInfo").then(resp=> {
           if (resp.status == 200) {
             this.user = resp.data;
-            console.log(resp.data);
           } else {
             this.$message({type: 'error', message: '数据加载失败!'});
           }
@@ -171,6 +192,23 @@
           //压根没见到服务器
           this.$message({type: 'error', message: '数据加载失败!'});
         })
+      },
+
+      userIconUpload(data){
+        var file = data.file;
+        var formdata = new FormData();
+        formdata.append('image', file);
+        uploadFileRequest("/userIconUpload", formdata).then(resp=> {
+          var json = resp.data;
+          console.log(resp)
+          if (json.status == 'success') {
+//            _this.$refs.md.$imgUpdateByUrl(pos, json.msg)
+//             this.$refs.md.$imglst2Url([[pos, json.msg]])
+
+          } else {
+            this.$message({type: json.status, message: json.msg});
+          }
+        });
       },
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);

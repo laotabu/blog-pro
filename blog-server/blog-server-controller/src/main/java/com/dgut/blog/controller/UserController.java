@@ -5,14 +5,22 @@ import com.dgut.blog.entity.User;
 import com.dgut.blog.parm.UpdateUserInfoPARM;
 import com.dgut.blog.service.UserService;
 import com.dgut.blog.utls.CustomUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -117,9 +125,11 @@ public class UserController {
                 currentUser.getPassword())){
             return new ResponseDTO("error","原密码错误");
         }
+        System.out.println("用户存在，用户名为：" + currentUser.getUsername());
         String inputPassword = parm.getNewPassword();
         String encodePassword = "";
-        if(inputPassword!=null){
+        if(inputPassword!=null && inputPassword!=""){
+            System.out.println("密码不为空，加密");
             encodePassword = passwordEncoder.encode(inputPassword);
         }
         boolean result = userService.updateUserPrimaryInfoByUserId(currentUser.getId(),
@@ -132,5 +142,73 @@ public class UserController {
         }else {
             return new ResponseDTO("fail","更新失败，请检查网络是否正常");
         }
+    }
+
+
+    /**
+     * 上传头像
+     * @param req
+     * @param image
+     * @return
+     */
+    @PostMapping(value = "userIconUpload")
+    public ResponseDTO uploadUserIcon(HttpServletRequest req, MultipartFile image) {
+//        System.out.println(image.getName());
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//        StringBuffer url = new StringBuffer();
+//        String filePath = "/blogIcon/" + sdf.format(new Date());
+//        String imgFolderPath = req.getServletContext().getRealPath(filePath);
+//        System.out.println("文件目录为： " + imgFolderPath);
+//        File imgFolder = new File(imgFolderPath);
+//        if (!imgFolder.exists()) {
+//            imgFolder.mkdirs();
+//        }
+//        url.append(req.getScheme())
+//                .append("://")
+//                .append(req.getServerName())
+//                .append(":")
+//                .append(req.getServerPort())
+//                .append(req.getContextPath())
+//                .append(filePath);
+//        String imgName = UUID.randomUUID() + "_" + image.getOriginalFilename().replaceAll(" ", "");
+//        try {
+//            IOUtils.write(image.getBytes(), new FileOutputStream(new File(imgFolder, imgName)));
+//            url.append("/").append(imgName);
+//            return new ResponseDTO("success", url.toString());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return new ResponseDTO("error", "上传失败!");
+//    }
+        // 获取文件路径
+        StringBuffer url = new StringBuffer();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String filePath = System.getProperty( "user.dir" ) + "/image/blogIcon/" + sdf.format(new Date());
+        File imgFolder = new File(filePath);
+        if (!imgFolder.exists()) {
+            imgFolder.mkdirs();
+        }
+        url.append(req.getScheme())
+            .append("://")
+            .append(req.getServerName())
+            .append(":")
+            .append(req.getServerPort());
+        if (req.getContextPath() == ""){
+            url.append("/");
+        } else {
+            url.append(req.getContextPath());
+        }
+        url.append(filePath.replace("\\", "/"));
+
+        // 文件名
+        String imgName = UUID.randomUUID() + "_" + image.getOriginalFilename().replaceAll(" ", "");
+        try {
+            IOUtils.write(image.getBytes(), new FileOutputStream(new File(imgFolder, imgName)));
+            url.append("/").append(imgName);
+            return new ResponseDTO("success", url.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ResponseDTO("error", "上传失败!");
     }
 }

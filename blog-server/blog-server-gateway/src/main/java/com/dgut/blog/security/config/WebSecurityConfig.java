@@ -96,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/blogimg/**","/index.html","/static/**","/verifyCode");
+        web.ignoring().antMatchers("/image/**","/index.html","/static/**","/verifyCode");
     }
 
     //配置跨域访问资源

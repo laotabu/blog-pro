@@ -4,7 +4,7 @@
       <div class="home_userinfoContainer">
         <el-dropdown @command="handleCommand">
   <span class="el-dropdown-link home_userinfo" style="font-size:30px">
-    {{currentUserName}}<i class="el-icon-arrow-down el-icon--right home_userinfo"></i>
+    {{this.$root.currentUserNickname}}<i class="el-icon-arrow-down el-icon--right home_userinfo"></i>
   </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="sysMsg">系统消息</el-dropdown-item>
@@ -70,7 +70,7 @@
             type: 'warning'
           }).then(function () {
             getRequest("/logout")
-            _this.currentUserName = '游客';
+            _this.$root.currentUserNickname = '游客';
             _this.$router.replace({path: '/'});
           }, function () {
             //取消
@@ -84,14 +84,14 @@
     mounted: function () {
       var _this = this;
       getRequest("/currentUserName").then(function (msg) {
-        _this.currentUserName = msg.data;
+        _this.$root.currentUserNickname = msg.data;
       }, function (msg) {
-        _this.currentUserName = '游客';
+        _this.$root.currentUserNickname = '游客';
       });
     },
     data(){
       return {
-        currentUserName: ''
+
       }
     }
   }

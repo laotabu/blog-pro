@@ -140,6 +140,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public boolean updateUserPrimaryInfoByUserId(Long id, String newEmail, String newPassword, String newNickname) {
+        System.out.println("要更新的内容为：");
+        System.out.println("newEmail：" + newEmail);
+        System.out.println("newPassword：" + newPassword);
+        System.out.println("newNickname：" + newNickname);
         return userMapper.updateUserPrimaryInfoByUserId(id, newEmail, newPassword, newNickname);
     }
 

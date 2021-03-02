@@ -18,6 +18,7 @@ new Vue({
   data: function(){
     return {
       isSuperAdmin: false,
+      currentUserNickname: ''
     }
   },
 })
