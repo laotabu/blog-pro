@@ -5,6 +5,12 @@ import com.dgut.blog.entity.User;
 import com.dgut.blog.parm.UpdateUserInfoPARM;
 import com.dgut.blog.service.UserService;
 import com.dgut.blog.utls.CustomUtils;
+import com.dgut.blog.utls.MinioUtils;
+import com.dgut.blog.vo.MinioProperties;
+import io.minio.MinioClient;
+import io.minio.PutObjectOptions;
+import io.minio.errors.*;
+import io.minio.http.Method;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,9 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +46,11 @@ public class UserController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    MinioUtils minioUtils;
+
+    @Autowired
+    MinioProperties minioProperties;
 
     /***
      * 获取当前用户名字
@@ -152,63 +163,42 @@ public class UserController {
      * @return
      */
     @PostMapping(value = "userIconUpload")
-    public ResponseDTO uploadUserIcon(HttpServletRequest req, MultipartFile image) {
-//        System.out.println(image.getName());
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//        StringBuffer url = new StringBuffer();
-//        String filePath = "/blogIcon/" + sdf.format(new Date());
-//        String imgFolderPath = req.getServletContext().getRealPath(filePath);
-//        System.out.println("文件目录为： " + imgFolderPath);
-//        File imgFolder = new File(imgFolderPath);
-//        if (!imgFolder.exists()) {
-//            imgFolder.mkdirs();
-//        }
-//        url.append(req.getScheme())
-//                .append("://")
-//                .append(req.getServerName())
-//                .append(":")
-//                .append(req.getServerPort())
-//                .append(req.getContextPath())
-//                .append(filePath);
-//        String imgName = UUID.randomUUID() + "_" + image.getOriginalFilename().replaceAll(" ", "");
-//        try {
-//            IOUtils.write(image.getBytes(), new FileOutputStream(new File(imgFolder, imgName)));
-//            url.append("/").append(imgName);
-//            return new ResponseDTO("success", url.toString());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return new ResponseDTO("error", "上传失败!");
-//    }
-        // 获取文件路径
-        StringBuffer url = new StringBuffer();
+    public ResponseDTO uploadUserIcon(HttpServletRequest req, MultipartFile image) throws IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String filePath = System.getProperty( "user.dir" ) + "/image/blogIcon/" + sdf.format(new Date());
-        File imgFolder = new File(filePath);
-        if (!imgFolder.exists()) {
-            imgFolder.mkdirs();
-        }
-        url.append(req.getScheme())
-            .append("://")
-            .append(req.getServerName())
-            .append(":")
-            .append(req.getServerPort());
-        if (req.getContextPath() == ""){
-            url.append("/");
-        } else {
-            url.append(req.getContextPath());
-        }
-        url.append(filePath.replace("\\", "/"));
-
-        // 文件名
-        String imgName = UUID.randomUUID() + "_" + image.getOriginalFilename().replaceAll(" ", "");
+        String imgName = UUID.randomUUID() + "_" + sdf.format(new Date()) + "_" + image.getOriginalFilename().replaceAll(" ", "");
+        MinioClient instance = minioUtils.getInstance();
+        File file = new File(imgName);
+        IOUtils.write(image.getBytes(), new FileOutputStream(file));
+        InputStream inputStream = new FileInputStream(file);
         try {
-            IOUtils.write(image.getBytes(), new FileOutputStream(new File(imgFolder, imgName)));
-            url.append("/").append(imgName);
-            return new ResponseDTO("success", url.toString());
-        } catch (IOException e) {
+            instance.putObject(minioProperties.getBucketName(),
+                                imgName,
+                                inputStream,
+                    new PutObjectOptions(inputStream.available(), -1));
+            String presignedObjectUrl = instance.getPresignedObjectUrl(Method.GET,
+                    minioProperties.getBucketName(),
+                    imgName,
+                    60 * 60 * 24 * 7,
+                    null);
+            if (presignedObjectUrl != "" && presignedObjectUrl != null) {
+                if(userService.updateUserIcon(presignedObjectUrl,
+                        customUtils.getCurrentUser().getId())){
+                    return new ResponseDTO("success", presignedObjectUrl);
+                }
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            inputStream.close();
+            if (file.isFile() && file.exists()) {
+                System.out.println("删除文件");
+                file.delete();
+            }
         }
-        return new ResponseDTO("error", "上传失败!");
+        return new ResponseDTO("error", "上传失败，请检查网络是否正常");
+
     }
+
+
 }

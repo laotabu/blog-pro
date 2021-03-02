@@ -76,5 +76,9 @@
         where id = #{id}
     </update>
 
+    <update id="updateUserIcon">
+        update user set icon = #{icon} where id = #{userId}
+    </update>
+
 
 </mapper>

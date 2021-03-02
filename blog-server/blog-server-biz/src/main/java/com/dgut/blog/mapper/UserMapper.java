@@ -24,4 +24,6 @@ public interface UserMapper extends BaseMapper<User> {
     boolean removeUserById(Long userId);
 
     boolean updateUserPrimaryInfoByUserId(Long id, String newEmail, String newPassword, String newNickname);
+
+    boolean updateUserIcon(String icon, Long userId);
 }

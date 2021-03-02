@@ -32,4 +32,6 @@ public interface UserService extends IService<User> {
     boolean updateUserRoles(List<Long> rids, Long id);
 
     boolean updateUserPrimaryInfoByUserId(Long id, String email, String newPassword, String newNickname);
+
+    boolean updateUserIcon(String icon, Long userId);
 }

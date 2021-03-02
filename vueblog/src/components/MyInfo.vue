@@ -123,6 +123,7 @@
     },
     mounted: function () {
       this.loaderUser();
+
     },
     methods: {
       onSubmit(){
@@ -204,7 +205,8 @@
           if (json.status == 'success') {
 //            _this.$refs.md.$imgUpdateByUrl(pos, json.msg)
 //             this.$refs.md.$imglst2Url([[pos, json.msg]])
-
+            this.$message({type: json.status, message: "更新成功"});
+            this.user.icon = json.msg;
           } else {
             this.$message({type: json.status, message: json.msg});
           }

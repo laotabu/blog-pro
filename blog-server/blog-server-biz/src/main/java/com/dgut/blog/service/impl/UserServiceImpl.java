@@ -147,6 +147,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.updateUserPrimaryInfoByUserId(id, newEmail, newPassword, newNickname);
     }
 
+    @Override
+    public boolean updateUserIcon(String icon, Long userId) {
+        return userMapper.updateUserIcon(icon, userId);
+    }
+
 
     /***
      * 根据用户名获取用户
