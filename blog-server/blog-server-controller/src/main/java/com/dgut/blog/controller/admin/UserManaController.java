@@ -3,9 +3,11 @@ package com.dgut.blog.controller.admin;
 import com.dgut.blog.dto.ResponseDTO;
 import com.dgut.blog.entity.Role;
 import com.dgut.blog.entity.User;
+import com.dgut.blog.parm.AddUserInfoPARM;
 import com.dgut.blog.service.RoleService;
 import com.dgut.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -26,6 +28,10 @@ public class UserManaController {
 
     @Autowired
     RoleService roleService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     /**
      * 根据用户别名获取用户列表
@@ -104,14 +110,40 @@ public class UserManaController {
 
     /**
      * 更新用户角色
-     * @param user
+     * @param userInfoPARM
      * @return
      */
     @PostMapping(value = "/user/register")
-    public ResponseDTO regesterUser(User user) {
-        System.out.println("要增加的用户为： " + user);
+    public ResponseDTO regesterUser(AddUserInfoPARM userInfoPARM) {
+        System.out.println("要增加的用户的信息为： " + userInfoPARM);
 
-        return new ResponseDTO("error", "更新失败!");
+        User exitUser = userService.getUserByUserName(userInfoPARM.getUserName());
+        if (exitUser != null){
+            return new ResponseDTO("error", "用户名已存在");
+        }
+        if(userService.registerUser(userInfoPARM)) {
+            return new ResponseDTO("success", "注册成功");
+        }
+        return new ResponseDTO("error", "注册失败");
+    }
 
+    /***
+     * 转化参数类为实体类
+     * @param userInfoPARM
+     */
+    public User changeUserInfo(AddUserInfoPARM userInfoPARM){
+        User user = new User();
+        user.setEnabled(userInfoPARM.getEnabled());
+        user.setEmail(userInfoPARM.getEmail());
+        user.setIcon(userInfoPARM.getIcon());
+        user.setNickname(userInfoPARM.getNickname());
+        user.setUserName(userInfoPARM.getUserName());
+        // 加密
+        user.setPassword(passwordEncoder
+                .encode(userInfoPARM
+                        .getPassword()));
+        // 设置用户Id列表
+         roleService.getRoleIdsByRoleName(userInfoPARM.getRoles());
+        return user;
     }
 }

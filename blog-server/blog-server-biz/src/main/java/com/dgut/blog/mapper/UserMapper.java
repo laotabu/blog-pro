@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dgut.blog.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,4 +27,6 @@ public interface UserMapper extends BaseMapper<User> {
     boolean updateUserPrimaryInfoByUserId(Long id, String newEmail, String newPassword, String newNickname);
 
     boolean updateUserIcon(String icon, Long userId);
+
+    boolean registerUser(String email, Boolean enabled, String icon, String nickname, String userName, String password, LocalDateTime now);
 }

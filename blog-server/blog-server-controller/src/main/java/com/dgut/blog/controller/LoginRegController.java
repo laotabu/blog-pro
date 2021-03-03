@@ -60,24 +60,7 @@ public class LoginRegController {
         return new ResponseDTO("error", "尚未登录，请登录!");
     }
 
-    /**
-     * 注册
-     * @param user
-     * @return
-     */
-    @PostMapping("/reg")
-    public ResponseDTO reg(User user) {
-        int result = userService.registerUser(user);
-        if (result == 0) {
-            //成功
-            return new ResponseDTO("success", "注册成功!");
-        } else if (result == 1) {
-            return new ResponseDTO("error", "用户名重复，注册失败!");
-        } else {
-            //失败
-            return new ResponseDTO("error", "注册失败!");
-        }
-    }
+
 
     @GetMapping("/verifyCode")
     public void verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {

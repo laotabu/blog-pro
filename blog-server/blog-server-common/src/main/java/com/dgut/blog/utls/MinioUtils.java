@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.InputStream;
 
 /**
  * @author: lishengdian | 932978775@qq.com
@@ -20,10 +19,6 @@ import java.io.InputStream;
 @Component
 @Data
 public class MinioUtils {
-    /**
-     * 工具类
-     * 爪哇笔记：https://blog.52itstyle.vip
-     */
 
     @Autowired
     private MinioProperties minioProperties;
@@ -47,38 +42,4 @@ public class MinioUtils {
             e.printStackTrace();
         }
     }
-
-    /**
-     * 判断 bucket是否存在
-     * @param bucketName
-     * @return
-     */
-    public boolean bucketExists(String bucketName){
-        try {
-            return instance.bucketExists(bucketName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
-     * 创建 bucket
-     * @param bucketName
-     */
-    public void makeBucket(String bucketName){
-        try {
-            boolean isExist = instance.bucketExists(bucketName);
-            if(!isExist) {
-                instance.makeBucket(bucketName);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
-
 }

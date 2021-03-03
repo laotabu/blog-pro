@@ -30,4 +30,3 @@ minio:
   secretKey: ic1csas9
   bucketName: blogicon
 
-

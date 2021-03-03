@@ -52,7 +52,7 @@
           <div class="personal-relation">
             <li class="fa fa-clock-o"></li>
             <div class="relation-item">注册时间：</div>
-            <div style="float: right; padding-right:20px;">{{user.registerDate | formatDateTime}}</div>
+            <div style="float: right;">{{user.registerDate | formatDateTime}}</div>
           </div>
           <div class="personal-relation">
             <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -78,6 +78,7 @@
 <!--          <div class="demo-type" style="margin-top: 45%">-->
 <!--            <el-avatar :src='user.icon' :size="125" ></el-avatar>-->
 <!--          </div>-->
+
           <el-upload
             class="avatar-uploader"
             :show-file-list="false"
@@ -86,9 +87,11 @@
             :before-upload="beforeAvatarUpload"
             :http-request="userIconUpload"
             >
-            <img v-if="user.icon" :src="user.icon" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            <span>点我修改头像</span>
+            <el-tooltip class="item" effect="dark" content="点我修改头像" placement="bottom-start">
+              <img v-if="user.icon" :src="user.icon" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-tooltip>
+
           </el-upload>
         </el-col>
       </el-row>

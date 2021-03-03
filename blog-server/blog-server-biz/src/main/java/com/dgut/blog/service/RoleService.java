@@ -16,4 +16,14 @@ public interface RoleService extends IService<Role> {
     List<Role> getRolesByUserId(Long userId);
 
     List<Role> getAllRole();
+
+    List<Long> getRoleIdsByRoleName(List<String> roleNames);
+
+    boolean deleteRoleByIds(List<Long> idList);
+
+    boolean addRole(Role role);
+
+    boolean updateRoleById(Role role);
+
+    Role getRoleByRoleName(String roleName);
 }

@@ -18,6 +18,11 @@
         </collection>
     </resultMap>
 
+    <insert id="registerUser">
+        insert into user(`user_name`,`nickname`,`password`,`enabled`,`email`,`icon`,`register_date`)
+        values (#{userName},#{nickname},#{password},#{enabled},#{email},#{icon},#{now})
+    </insert>
+
     <delete id="removeUserById">
             DELETE user,
             user_role

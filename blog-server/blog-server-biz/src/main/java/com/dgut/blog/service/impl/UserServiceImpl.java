@@ -3,6 +3,7 @@ package com.dgut.blog.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dgut.blog.entity.User;
 import com.dgut.blog.mapper.UserMapper;
+import com.dgut.blog.parm.AddUserInfoPARM;
 import com.dgut.blog.service.RoleService;
 import com.dgut.blog.service.UserRoleService;
 import com.dgut.blog.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,34 +39,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     PasswordEncoder passwordEncoder;
 
-
     /**
      * 注册用户
-     * @param user 用户对象
+     * @param userInfoPARM 用户对象信息
      * @return
-     * 0 - 成功
-     * 1 - 用户名重复
      */
     @Override
-    public int registerUser(User user) {
-        // 密码加密
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setEnabled(true);
-        if (!this.save(user)) {
-            // 用户名重复
-            return 1;
+    public boolean registerUser(AddUserInfoPARM userInfoPARM) {
+        String username = userInfoPARM.getUserName();
+        // 插入数据
+        boolean result1 = userMapper.registerUser(userInfoPARM.getEmail(),
+                userInfoPARM.getEnabled(),
+                userInfoPARM.getIcon(),
+                userInfoPARM.getNickname(),
+                username,
+                passwordEncoder
+                        .encode(userInfoPARM.getPassword()),
+                LocalDateTime.now());
+        // 插入失败
+        if (!result1){
+            return false;
         }
-        // 默认配置普通用户
-        List<Long> rolesIds = new ArrayList<>();
-        rolesIds.add(2L);
-        boolean result = userRoleService.addRolesByUserId(rolesIds, user.getId());
-        if (result) {
-            // 插入成功
-            return 0;
-        }else {
-            // 插入失败
-            return 1;
+        boolean result2 = userRoleService.addRolesByUserId(
+                roleService.getRoleIdsByRoleName(userInfoPARM.getRoles())
+                , this.getUserByUserName(username).getId()
+        );
+        // 插入失败
+        if (!result2){
+            return false;
         }
+        return true;
     }
 
     /**
@@ -147,9 +151,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.updateUserPrimaryInfoByUserId(id, newEmail, newPassword, newNickname);
     }
 
+    /**
+     * 根据用户id更新头像
+     * @param icon
+     * @param userId
+     * @return
+     */
     @Override
     public boolean updateUserIcon(String icon, Long userId) {
         return userMapper.updateUserIcon(icon, userId);
+    }
+
+    /**
+     * 根据用户名查询用户
+     * @param username
+     * @return
+     */
+    @Override
+    public User getUserByUserName(String username) {
+        return this.lambdaQuery()
+                .eq(User::getUsername, username)
+                .one();
     }
 
 

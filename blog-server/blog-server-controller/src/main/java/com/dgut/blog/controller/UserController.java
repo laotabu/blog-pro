@@ -1,8 +1,10 @@
 package com.dgut.blog.controller;
 
 import com.dgut.blog.dto.ResponseDTO;
+import com.dgut.blog.entity.Role;
 import com.dgut.blog.entity.User;
 import com.dgut.blog.parm.UpdateUserInfoPARM;
+import com.dgut.blog.service.RoleService;
 import com.dgut.blog.service.UserService;
 import com.dgut.blog.utls.CustomUtils;
 import com.dgut.blog.utls.MinioUtils;
@@ -24,6 +26,7 @@ import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +42,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RoleService roleService;
 
     @Autowired
     CustomUtils customUtils;
@@ -121,6 +127,18 @@ public class UserController {
         System.out.println("获取用户信息");
         return userService.getUserByUserId(customUtils.getCurrentUser().getId());
     }
+
+
+    /**
+     * 获取用户角色列表
+     * @return
+     */
+    @GetMapping(value = "/userRoles")
+    public List<Role> userRoles() {
+        System.out.println("获取用户角色列表");
+        return roleService.getAllRole();
+    }
+
 
     /**
      * 更新用户基础信息（邮箱，别称，密码）

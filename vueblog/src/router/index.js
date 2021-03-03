@@ -10,6 +10,8 @@ import UserMana from '@/components/UserMana'
 import BlogDetail from '@/components/BlogDetail'
 import MyInfo from '@/components/MyInfo'
 import AddUser from '@/components/AddUser'
+import RoleMana from '@/components/RoleMana'
+
 Vue.use(Router)
 
 export default new Router({
@@ -89,6 +91,18 @@ export default new Router({
           iconCls: 'fa fa-reorder',
           name: '栏目管理',
           component: CateMana
+        }
+      ]
+    }, {
+      path: '/home',
+      component: Home,
+      name: '角色管理',
+      children: [
+        {
+          path: '/RoleMana',
+          iconCls: 'fa fa-reorder',
+          name: '角色管理',
+          component: RoleMana
         }
       ]
     }, {
