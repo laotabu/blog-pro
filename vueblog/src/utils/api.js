@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-let base = '';
+let base = 'api';
+// let base = '';
 export const postRequest = (url, params) => {
   return axios({
     method: 'post',

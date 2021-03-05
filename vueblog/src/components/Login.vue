@@ -10,7 +10,7 @@
       <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
 
-    <el-form-item prop="code">
+    <el-form-item prop="code" >
       <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
                 placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px" ></el-input>
       <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
@@ -31,7 +31,7 @@
     data(){
       return {
         // vcUrl: '/verifyCode?time='+new Date(),
-        vcUrl: '/verifyCode?time='+new Date(),
+        vcUrl: '/api/verifyCode?time='+new Date(),
         rules: {
           account: [{required: true, message: '请输入用户名', trigger: 'blur'}],
           checkPass: [{required: true, message: '请输入密码', trigger: 'blur'}],
@@ -78,7 +78,8 @@
         });
       },
       updateVerifyCode() {
-        this.vcUrl = '/verifyCode?time='+new Date();
+        // this.vcUrl = '/verifyCode?time='+new Date();
+        this.vcUrl = '/api/verifyCode?time='+new Date();
       }
     }
   }

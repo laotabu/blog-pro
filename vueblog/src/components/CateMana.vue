@@ -47,7 +47,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button type="danger" :disabled="this.selItems.length==0" style="margin-top: 10px;width: 100px;"
+      <el-button type="danger" :disabled="this.selItems.length==0" style="margin-top: 10px;width: 100px;float:left !important;"
                  @click="deleteAll" v-if="this.categories.length>0">批量删除
       </el-button>
     </el-main>

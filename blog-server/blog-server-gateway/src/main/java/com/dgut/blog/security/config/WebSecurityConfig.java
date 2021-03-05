@@ -61,10 +61,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 设置验证码过滤器(先于密码处理)
         http.addFilterBefore(verifyCodeFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // 跨域
         http.cors()
-                .configurationSource(CorsConfigurationSource())
-                .and()
-                .authorizeRequests()
+                .configurationSource(CorsConfigurationSource());
+
+
+        // 表单提交
+        http.formLogin()
+                // 自定义登录路径
+                .loginPage("/index.html")
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
+                .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .permitAll();
+
+        // 登出逻辑
+        http.logout()
+                .permitAll();
+
+        // 授权
+        http.authorizeRequests()
                 .antMatchers("/admin/category/all")
                 // 需要授权才能访问(上面)（只能看，不能做任何修改）
                 .authenticated()
@@ -73,30 +91,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasRole("超级管理员")
                 .anyRequest()
                 //其他的路径都是登录后即可访问
-                .authenticated()
-                .and()
-                .formLogin()
-                // 自定义登录路径
-                .loginPage("/login_page")
-                .successHandler(customAuthenticationSuccessHandler)
-                .failureHandler(customAuthenticationFailureHandler)
-                .loginProcessingUrl("/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .csrf()
-                .disable()
-                .exceptionHandling()
-                .accessDeniedHandler(customAccessDeniedHandler);
+                .authenticated();
+
+        // 权限不足处理
+        http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
+
+        // 关闭csrf
+        http.csrf().disable();
+
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/image/**","/index.html","/static/**","/verifyCode");
+        web.ignoring().antMatchers("/image/**", "/index.html","/css/**","/fonts/**","/img/**","/js/**","/verifyCode");
     }
 
     //配置跨域访问资源

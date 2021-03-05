@@ -149,7 +149,7 @@
             this.$message({type: 'error', message: '您没有更新任何一项数据'});
           } else {
             console.log(data);
-            postRequest("updateUserInfo", data).then(resp => {
+            postRequest("/updateUserInfo", data).then(resp => {
               console.log(resp);
               if (resp.data.status == 'success') {
                 // 更新密码
@@ -179,7 +179,7 @@
         this.UpdateUserInfoPARM.inputNickName = "";
       },
       loaderUser(){
-        getRequest("userInfo").then(resp=> {
+        getRequest("/userInfo").then(resp=> {
           if (resp.status == 200) {
             this.user = resp.data;
           } else {

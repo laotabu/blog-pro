@@ -53,9 +53,9 @@
               :http-request="uploadIcon"
             >
               <el-tooltip class="item" effect="dark" content="上传头像" placement="bottom-start">
-              <img v-if="file" :src="user.icon" class="avatar" >
-
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                <img v-if="user.icon" :src="user.icon" class="avatar" >
+                <i v-else-if="file&&user.icon==''" class="el-icon-check avatar-uploader-icon-adduser"></i>
+                <i v-else class="el-icon-plus avatar-uploader-icon-adduser"></i>
             </el-tooltip>
 
             </el-upload>
@@ -146,7 +146,7 @@
               var json = resp.data;
               if (json.status == 'success') {
                 _this.user.icon = json.msg;
-                postRequest("admin/user/register", {
+                postRequest("/admin/user/register", {
                   userName: _this.user.name,
                   password: _this.user.password,
                   email: _this.user.email,
@@ -203,12 +203,12 @@
   #uploadIcon .el-upload:hover {
     border-color: #409EFF;
   }
-  .avatar-uploader-icon {
+   .avatar-uploader-icon-adduser {
     font-size: 28px;
     color: #8c939d;
     width: 178px;
     height: 178px;
-    line-height: 178px;
+    line-height: 178px !important;
     left: 5px;
   }
   .avatar {
