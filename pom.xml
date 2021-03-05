@@ -15,10 +15,6 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>blog-server</module>
-        <module>blog-server/blog-server-entity</module>
-        <module>blog-server/blog-server-biz</module>
-        <module>blog-server/blog-server-controller</module>
-        <module>blog-server/blog-server-gateway</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -60,10 +56,10 @@
     <build>
         <plugins>
         <!-- SpringBoot 项目发布 打jar包 依赖 -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
             <!-- Maven test junit 报告中文UTF-8编码 插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

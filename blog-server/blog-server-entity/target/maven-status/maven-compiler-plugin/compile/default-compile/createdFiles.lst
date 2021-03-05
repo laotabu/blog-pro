@@ -1,0 +1,10 @@
+com\dgut\blog\entity\Article.class
+com\dgut\blog\entity\Category.class
+com\dgut\blog\vo\ArticleTag.class
+com\dgut\blog\vo\UserRole.class
+com\dgut\blog\entity\User.class
+com\dgut\blog\vo\UserView.class
+com\dgut\blog\entity\Role.class
+com\dgut\blog\entity\Tag.class
+com\dgut\blog\parm\UpdateUserInfoPARM.class
+com\dgut\blog\dto\ResponseDTO.class

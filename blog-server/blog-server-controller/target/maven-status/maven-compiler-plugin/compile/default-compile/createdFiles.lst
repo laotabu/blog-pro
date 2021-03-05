@@ -1,0 +1,6 @@
+com\dgut\blog\controller\admin\UserManaController.class
+com\dgut\blog\controller\UserController.class
+com\dgut\blog\controller\LoginRegController.class
+com\dgut\blog\controller\admin\CategoryController.class
+com\dgut\blog\controller\admin\AdminController.class
+com\dgut\blog\controller\ArticleController.class
